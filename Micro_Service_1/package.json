@@ -4,7 +4,9 @@
   "scripts": {
     "server1": "nodemon server1.js",
     "server2": "nodemon server2.js",
-    "dev": "concurrently \"npm run server1\" \"npm run server2\""
+    "dev:server1": "npm run server1",
+    "dev:server2": "npm run server2",
+    "dev:both": "concurrently \"npm run server1\" \"npm run server2\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
