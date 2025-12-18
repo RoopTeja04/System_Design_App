@@ -18,6 +18,7 @@ createRedisClient
   .catch((err) => {
     console.log("Redis connection failed:", err);
   });
+  
 
 exports.getProfileByID = async (req, res) => {
   try {
