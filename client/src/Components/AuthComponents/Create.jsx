@@ -29,7 +29,10 @@ const Create = () => {
             );
             if (res.status === 200) {
                 alert(res.data.message);
+                localStorage.setItem("Token", res.data.Token);
+                localStorage.setItem("UserID", res.data.userID);
                 setFormData(DefaultValues);
+                navigate("/main/feed");
             }
         } catch (err) {
             console.log(err)
