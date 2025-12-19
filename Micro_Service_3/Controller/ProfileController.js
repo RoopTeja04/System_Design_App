@@ -23,6 +23,7 @@ createRedisClient
 exports.getProfileByID = async (req, res) => {
   try {
     const { userID } = req.params;
+    console.log(userID)
 
     if (!userID) {
       return res.status(401).json({ message: "Unaurthozied Access" });

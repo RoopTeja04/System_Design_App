@@ -27,7 +27,8 @@ const Login = () => {
             const res = await axios.post("http://localhost:8080/auth/login", { email: formData.email, password: formData.password });
             if (res.status === 200) {
                 alert(res.data.message);
-                localStorage.setItem("Token", res.data.Token)
+                localStorage.setItem("Token", res.data.Token);
+                localStorage.setItem("UserID", res.data.userID);
                 setFormData(DefaultValues);
                 navigate("/main/feed");
             }
