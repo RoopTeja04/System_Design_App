@@ -6,7 +6,8 @@ const BookmarksSchema = new mongoose.Schema({
         required: true,
     },
     postID: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "PostSchema",
         required: true,
     }
 }, { timestamps: true });

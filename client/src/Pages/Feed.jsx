@@ -96,15 +96,27 @@ const Feed = () => {
     const handleAddBookmark = async ({ postID }) => {
         try {
             if (UserStatus) {
-                const res = await axios.post("http://localhost:8080/api/feed/add-bookmarks",
-                    {
-                        userID: getUserID,
-                        postID: postID
+                if (addedBookmarks.some(b => b.postID === postID)) {
+                    //Delete Bookmark
+                    const res = await axios.delete(`http://localhost:8080/api/feed/delete-bookmark?userID=${getUserID}&postID=${postID}`);
+
+                    if (res.status === 200) {
+                        alert(res.data.message);
+                        fetchAddedBookmarks();
                     }
-                );
-                if (res.status === 200) {
-                    alert(res.data.message);
-                    fetchAddedBookmarks();
+                }
+                else {
+                    // add to Bookmark
+                    const res = await axios.post("http://localhost:8080/api/feed/add-bookmarks",
+                        {
+                            userID: getUserID,
+                            postID: postID
+                        }
+                    );
+                    if (res.status === 200) {
+                        alert(res.data.message);
+                        fetchAddedBookmarks();
+                    }
                 }
             }
         } catch (err) {
