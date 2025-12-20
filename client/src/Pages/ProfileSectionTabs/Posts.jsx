@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 import { BsThreeDots } from 'react-icons/bs';
-import { MdOutlinePostAdd } from 'react-icons/md';
+import { MdOutlinePostAdd, MdEdit, MdDelete, MdInfo } from 'react-icons/md';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { BiComment, BiShare } from 'react-icons/bi';
 import dayjs from 'dayjs';
@@ -13,6 +13,7 @@ const Posts = () => {
     const userID = localStorage.getItem("UserID");
 
     const [PostsData, setPostsData] = React.useState([]);
+    const [openDropdown, setOpenDropdown] = React.useState(null);
 
     React.useEffect(() => {
         fetchProfile();
@@ -28,6 +29,18 @@ const Posts = () => {
             console.log(err)
         }
     }
+
+    const toggleDropDown = (index) => {
+        setOpenDropdown((prev) => (prev === index ? null : index));
+    }
+
+    React.useEffect(() => {
+        const handleClickOutside = () => setOpenDropdown(null);
+        if (openDropdown !== null) {
+            document.addEventListener('click', handleClickOutside);
+        }
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [openDropdown]);
 
     return (
         <div>
@@ -45,9 +58,58 @@ const Posts = () => {
                                             <div className='w-2 h-2 bg-linear-to-r from-purple-500 to-blue-500 rounded-full'></div>
                                             <span className='text-xs font-medium text-gray-500'>Your Post</span>
                                         </div>
-                                        <button className='text-gray-400 hover:text-gray-600 transition-colors duration-200'>
-                                            <BsThreeDots size={18} />
-                                        </button>
+
+                                        <div className='relative'>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    toggleDropDown(index);
+                                                }}
+                                                className='text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 rounded-full hover:bg-gray-100'
+                                            >
+                                                <BsThreeDots size={18} />
+                                            </button>
+
+                                            {openDropdown === index && (
+                                                <div className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 animate-fadeIn'>
+                                                    <button
+                                                        className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 flex items-center gap-3'
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            console.log('Edit post', post);
+                                                            setOpenDropdown(null);
+                                                        }}
+                                                    >
+                                                        <MdEdit size={18} />
+                                                        <span className='font-medium'>Edit</span>
+                                                    </button>
+
+                                                    <button
+                                                        className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 flex items-center gap-3'
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            console.log('Delete post', post);
+                                                            setOpenDropdown(null);
+                                                        }}
+                                                    >
+                                                        <MdDelete size={18} />
+                                                        <span className='font-medium'>Delete</span>
+                                                    </button>
+
+                                                    <button
+                                                        className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200 flex items-center gap-3'
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            console.log('Info for post', post);
+                                                            setOpenDropdown(null);
+                                                        }}
+                                                    >
+                                                        <MdInfo size={18} />
+                                                        <span className='font-medium'>Info</span>
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
 
                                     <div className='p-4 flex-1 overflow-hidden flex flex-col justify-between'>
