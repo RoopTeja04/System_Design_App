@@ -1,5 +1,6 @@
 const UserModel = require("../Model/UserModel");
 const { createClient } = require("redis");
+const PostModel = require("../Model/post");
 
 const createRedisClient = createClient({
   username: "default",
@@ -46,3 +47,29 @@ exports.getProfileByID = async (req, res) => {
     res.status(500).json({ message: err });
   }
 };
+
+exports.getPostsByUserID = async (req, res) => {
+  try {
+    const { userID } = req.params;
+
+    const findUser = await UserModel.findById(userID);
+
+    if (!findUser) {
+      return res.status(404).json({ message: "User Not Found" });
+    }
+
+    const CachePosts = await createRedisClient.get(userID);
+
+    if (CachePosts) {
+      return res.status(200).json({ message: "Data from Cache", Posts: JSON.parse(CachePosts) })
+    }
+
+    const Posts = await PostModel.find({ userID }).sort({ createdAt: -1 });
+
+    await createRedisClient.setEx(userID, 60, JSON.stringify(Posts));
+
+    return res.status(200).json({ message: "Success", Posts });
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+}
