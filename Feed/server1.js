@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res, next) => {
-  console.log("🔥 Incoming URL:", req.originalUrl);
+  console.log("Incoming URL:", req.originalUrl);
   next();
 });
 
