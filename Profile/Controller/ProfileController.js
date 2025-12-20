@@ -18,12 +18,10 @@ createRedisClient
   .catch((err) => {
     console.log("Redis connection failed:", err);
   });
-  
 
 exports.getProfileByID = async (req, res) => {
   try {
     const { userID } = req.params;
-    console.log(userID)
 
     if (!userID) {
       return res.status(401).json({ message: "Unaurthozied Access" });
@@ -31,8 +29,8 @@ exports.getProfileByID = async (req, res) => {
 
     const CachedData = await createRedisClient.get(userID);
 
-    if(CachedData){
-      return res.status(200).json({ message:"Data from Cache", data:JSON.parse(CachedData) })
+    if (CachedData) {
+      return res.status(200).json({ message: "Data from Cache", User: JSON.parse(CachedData) })
     }
 
     const user = await UserModel.findById(userID);
@@ -43,7 +41,7 @@ exports.getProfileByID = async (req, res) => {
       return res.status(404).json({ message: "User Not Found" });
     }
 
-    return res.status(200).json({ message: "Success", user });
+    return res.status(200).json({ message: "Success", User: user });
   } catch (err) {
     res.status(500).json({ message: err });
   }
