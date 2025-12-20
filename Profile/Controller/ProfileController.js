@@ -18,7 +18,6 @@ createRedisClient
   .catch((err) => {
     console.log("Redis connection failed:", err);
   });
-  
 
 exports.getProfileByID = async (req, res) => {
   try {
@@ -31,8 +30,8 @@ exports.getProfileByID = async (req, res) => {
 
     const CachedData = await createRedisClient.get(userID);
 
-    if(CachedData){
-      return res.status(200).json({ message:"Data from Cache", data:JSON.parse(CachedData) })
+    if (CachedData) {
+      return res.status(200).json({ message: "Data from Cache", data: JSON.parse(CachedData) })
     }
 
     const user = await UserModel.findById(userID);

@@ -24,6 +24,7 @@ const Feed = () => {
     const [UserStatus, setUserStatus] = React.useState(null);
     const [formData, setFormData] = React.useState(DefaultValues);
     const [visibleForm, setVisibleForm] = React.useState(false);
+    const [addedBookmarks, setAddedBookmarks] = React.useState([]);
     const [DailyFeed, setDailyFeed] = React.useState([]);
 
     React.useEffect(() => {
@@ -91,6 +92,41 @@ const Feed = () => {
             console.log(err)
         }
     }
+
+    const handleAddBookmark = async ({ postID }) => {
+        try {
+            if (UserStatus) {
+                const res = await axios.post("http://localhost:8080/api/feed/add-bookmarks",
+                    {
+                        userID: getUserID,
+                        postID: postID
+                    }
+                );
+                if (res.status === 200) {
+                    alert(res.data.message);
+                    fetchAddedBookmarks();
+                }
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    React.useEffect(() => {
+        fetchAddedBookmarks();
+    }, []);
+
+    const fetchAddedBookmarks = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/feed/user-bookmarks/${getUserID}`);
+            if (res.status === 200) {
+                setAddedBookmarks(res.data.bookmarks);
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
 
     return (
         <div className="max-w-3xl mx-auto space-y-6">
@@ -233,8 +269,15 @@ const Feed = () => {
                                                 </button>
                                             </div>
 
-                                            <button className='text-gray-600 hover:text-purple-500 transition-colors duration-200'>
-                                                <BsBookmark size={22} className='hover:scale-110 transition-transform duration-200' />
+                                            <button
+                                                onClick={() => handleAddBookmark({ postID: post._id })}
+                                                className='text-gray-600 hover:text-purple-500 transition-colors duration-200'
+                                            >
+                                                {
+                                                    addedBookmarks.some(b => b.postID === post._id) ?
+                                                        <BsBookmarkFill size={22} className='hover:scale-110 transition-transform duration-200' />
+                                                        : <BsBookmark size={22} className='hover:scale-110 transition-transform duration-200' />
+                                                }
                                             </button>
                                         </div>
                                     </div>
