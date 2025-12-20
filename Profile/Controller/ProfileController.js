@@ -28,7 +28,9 @@ exports.getProfileByID = async (req, res) => {
       return res.status(401).json({ message: "Unaurthozied Access" });
     }
 
-    const CachedData = await createRedisClient.get(userID);
+    const cacheKey = `profile: ${userID}`;
+
+    const CachedData = await createRedisClient.get(cacheKey);
 
     if (CachedData) {
       return res.status(200).json({ message: "Data from Cache", User: JSON.parse(CachedData) })
@@ -52,13 +54,15 @@ exports.getPostsByUserID = async (req, res) => {
   try {
     const { userID } = req.params;
 
+    const cacheKey = `posts: ${userID}`;
+
     const findUser = await UserModel.findById(userID);
 
     if (!findUser) {
       return res.status(404).json({ message: "User Not Found" });
     }
 
-    const CachePosts = await createRedisClient.get(userID);
+    const CachePosts = await createRedisClient.get(cacheKey);
 
     if (CachePosts) {
       return res.status(200).json({ message: "Data from Cache", Posts: JSON.parse(CachePosts) })

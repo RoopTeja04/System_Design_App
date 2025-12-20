@@ -23,7 +23,7 @@ exports.addPost = async (req, res) => {
 
 exports.getAllPost = async (req, res) => {
     try {
-        const allPosts = await PostModel.find();
+        const allPosts = await PostModel.find().sort({ createdAt: -1 });
         return res.status(200).json({ message: "All Posts", allPosts })
     } catch (error) {
         return res.status(500).json({ message: "Server Down" })
