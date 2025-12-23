@@ -4,16 +4,26 @@ import { BsThreeDots } from 'react-icons/bs';
 import { MdOutlinePostAdd, MdEdit, MdDelete, MdInfo } from 'react-icons/md';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { BiComment, BiShare } from 'react-icons/bi';
+import { IoCloseCircle } from 'react-icons/io5';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
 
 const Posts = () => {
 
-    const userID = localStorage.getItem("UserID");
+    const getUserID = localStorage.getItem("UserID");
+    const DefaultValues = {
+        title: "",
+        des: "",
+        userID: getUserID,
+        profileName: "",
+    }
 
+    const [UserStatus, setUserStatus] = React.useState(null);
     const [PostsData, setPostsData] = React.useState([]);
     const [openDropdown, setOpenDropdown] = React.useState(null);
+    const [formData, setFormData] = React.useState(DefaultValues);
+    const [visibleForm, setVisibleForm] = React.useState(false);
 
     React.useEffect(() => {
         fetchProfile();
@@ -21,11 +31,25 @@ const Posts = () => {
 
     const fetchProfile = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-posts/${userID}`);
+            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-posts/${getUserID}`);
             if (res.status === 200)
                 setPostsData(res.data.Posts);
         }
         catch (err) {
+            console.log(err)
+        }
+    }
+
+    React.useEffect(() => {
+        validateUser();
+    }, []);
+
+    const validateUser = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/auth/validate-user/${getUserID}`);
+            if (res.status === 200)
+                setUserStatus(res.data.FindedUser.name);
+        } catch (err) {
             console.log(err)
         }
     }
@@ -41,6 +65,40 @@ const Posts = () => {
         }
         return () => document.removeEventListener('click', handleClickOutside);
     }, [openDropdown]);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value })
+    }
+
+    const handleUploadNewPost = async () => {
+        try {
+            if (!formData.title || !formData.userID) {
+                alert("please fill the details")
+            }
+            else {
+                if (UserStatus) {
+                    const res = await axios.post("http://localhost:8080/api/feed/upload-post",
+                        {
+                            title: formData.title,
+                            des: formData.des,
+                            userID: formData.userID,
+                            profileName: UserStatus,
+                        }
+                    );
+                    if (res.status === 200) {
+                        alert(res.data.message);
+                        fetchProfile();
+                    }
+                }
+            }
+        } catch (err) {
+            console.log(err)
+        }
+        finally {
+            setFormData(DefaultValues);
+            setVisibleForm(!visibleForm);
+        }
+    }
 
     return (
         <div>
@@ -148,9 +206,74 @@ const Posts = () => {
                             <p className='text-gray-600 leading-relaxed mb-6'>
                                 You haven't created any posts yet. Start sharing your thoughts and ideas with the world!
                             </p>
-                            <button className='px-6 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-purple-500/30'>
+                            <button
+                                onClick={() => setVisibleForm(!visibleForm)}
+                                className='px-6 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-purple-500/30'
+                            >
                                 Create Your First Post
                             </button>
+                        </div>
+                    </div>
+                )
+            }
+
+            {
+                visibleForm && (
+                    <div className='fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-8'>
+                        <div className='bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-8 relative animate-fadeIn'>
+                            <button
+                                onClick={() => setVisibleForm(false)}
+                                className='absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200'
+                            >
+                                <IoCloseCircle size={32} />
+                            </button>
+
+                            <h2 className='text-2xl font-bold text-gray-800 mb-6'>Create New Post</h2>
+
+                            <div className='space-y-4'>
+                                <div>
+                                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                        Post Title
+                                    </label>
+                                    <input
+                                        type='text'
+                                        name='title'
+                                        placeholder='Enter an engaging title...'
+                                        value={formData.title}
+                                        onChange={handleChange}
+                                        className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 outline-none'
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                        Description
+                                    </label>
+                                    <textarea
+                                        name='des'
+                                        rows='6'
+                                        placeholder='Share your thoughts, ideas, or story...'
+                                        value={formData.des}
+                                        onChange={handleChange}
+                                        className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 outline-none resize-none'
+                                    />
+                                </div>
+
+                                <div className='flex gap-3 pt-4'>
+                                    <button
+                                        onClick={handleUploadNewPost}
+                                        className='flex-1 px-6 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-purple-500/30'
+                                    >
+                                        Publish Post
+                                    </button>
+                                    <button
+                                        onClick={() => { setVisibleForm(false), setFormData(DefaultValues) }}
+                                        className='px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all duration-200'
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )

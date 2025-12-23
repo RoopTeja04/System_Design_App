@@ -59,11 +59,6 @@ exports.getUserBookmarks = async (req, res) => {
         }
 
         const bookmarks = await Bookmarks.find({ userID });
-
-        if (!bookmarks) {
-            return res.status(404).json({ message: "No Bookmarks found" })
-        }
-
         return res.status(200).json({ message: "User Bookmarks", bookmarks })
     } catch (error) {
         return res.status(500).json({ message: "Server Down" })
