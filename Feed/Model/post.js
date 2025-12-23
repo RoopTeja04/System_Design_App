@@ -16,13 +16,13 @@ const PostSchema = new mongoose.Schema({
     des: {
         type: String,
     },
-    likes: {
-        type: Array,
-        default: [],
+    likesCount: {
+        type: Number,
+        default: 0,
     },
-    comments: {
-        type: Array,
-        default: [],
+    commentsCount: {
+        type: Number,
+        default: 0,
     }
 }, { timestamps: true });
 

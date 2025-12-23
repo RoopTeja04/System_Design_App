@@ -25,6 +25,7 @@ const Feed = () => {
     const [formData, setFormData] = React.useState(DefaultValues);
     const [visibleForm, setVisibleForm] = React.useState(false);
     const [addedBookmarks, setAddedBookmarks] = React.useState([]);
+    const [addedLikes, setAddedLikes] = React.useState([]);
     const [DailyFeed, setDailyFeed] = React.useState([]);
 
     React.useEffect(() => {
@@ -139,6 +140,67 @@ const Feed = () => {
         }
     }
 
+    React.useEffect(() => {
+        fetchAddedLikes();
+    }, []);
+
+    const fetchAddedLikes = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/feed/user-likes/${getUserID}`);
+            if (res.status === 200) {
+                setAddedLikes(res.data.likes);
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const handleLikeFunction = async ({ postID }) => {
+        try {
+            if (UserStatus) {
+
+                const isLiked = addedLikes.some(l => l.postID === postID);
+
+                setDailyFeed(prev =>
+                    prev.map(post =>
+                        post._id === postID
+                            ? {
+                                ...post,
+                                likesCount: isLiked
+                                    ? post.likesCount - 1
+                                    : post.likesCount + 1
+                            }
+                            : post
+                    )
+                );
+                setAddedLikes(prev => isLiked ? prev.filter(l => l.postID !== postID) : [...prev, { postID }]);
+                if (isLiked) {
+                    //Remove Like
+                    const res = await axios.delete("http://localhost:8080/api/feed/remove-like", {
+                        data: {
+                            userID: getUserID,
+                            postID: postID,
+                        }
+                    });
+                    if (res.status === 200) {
+                        fetchAddedLikes();
+                    }
+                }
+                else {
+                    // ADD Like
+                    const res = await axios.post("http://localhost:8080/api/feed/add-like", {
+                        userID: getUserID,
+                        postID: postID
+                    });
+                    if (res.status === 200) {
+                        fetchAddedLikes();
+                    }
+                }
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
 
     return (
         <div className="max-w-3xl mx-auto space-y-6">
@@ -267,13 +329,22 @@ const Feed = () => {
                                     <div className='border-t border-gray-200 px-6 py-3'>
                                         <div className='flex items-center justify-between'>
                                             <div className='flex items-center gap-6'>
-                                                <button className='flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors duration-200 group'>
-                                                    <AiOutlineHeart size={24} className='group-hover:scale-110 transition-transform duration-200' />
-                                                    <span className='font-medium'>{post.likes.length}</span>
+                                                <button
+                                                    className='flex items-center gap-2 text-gray-600 hover:text-gray-600 transition-colors duration-200 group'
+                                                    onClick={() => handleLikeFunction({ postID: post._id })}
+                                                >
+                                                    {
+                                                        addedLikes.some(l => l.postID === post._id) ? (
+                                                            <AiFillHeart size={24} className='text-pink-500 group-hover:scale-110 transition-transform duration-200' />
+                                                        ) : (
+                                                            <AiOutlineHeart size={24} className='group-hover:scale-110 transition-transform duration-200' />
+                                                        )
+                                                    }
+                                                    <span className='font-medium'>{post.likesCount}</span>
                                                 </button>
                                                 <button className='flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors duration-200 group'>
                                                     <BiComment size={24} className='group-hover:scale-110 transition-transform duration-200' />
-                                                    <span className='font-medium'>{post.comments.length}</span>
+                                                    <span className='font-medium'>{post.commentsCount}</span>
                                                 </button>
                                                 <button className='flex items-center gap-2 text-gray-600 hover:text-green-500 transition-colors duration-200 group'>
                                                     <BiShare size={24} className='group-hover:scale-110 transition-transform duration-200' />

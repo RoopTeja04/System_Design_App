@@ -1,4 +1,5 @@
 const Bookmarks = require("../Model/Bookmarks");
+const Likes = require("../Model/Likes");
 const PostModel = require("../Model/post");
 
 exports.addPost = async (req, res) => {
@@ -101,6 +102,57 @@ exports.getBookmarksByUserID = async (req, res) => {
         }
 
         return res.status(200).json({ message: "User Bookmarks", bookmarks })
+    } catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.AddToLike = async (req, res) => {
+    try {
+        const { userID, postID } = req.body;
+
+        if (!userID || !postID) {
+            return res.status(400).json({ message: "Unable to Add Like" });
+        }
+        const createdLike = await Likes.create({ userID, postID });
+
+        await PostModel.findByIdAndUpdate({ _id: postID }, { $inc: { likesCount: 1 } })
+
+        return res.status(200).json({ message: "Like Added Successfully", createdLike });
+    } catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.RemoveLike = async (req, res) => {
+    try {
+        const { userID, postID } = req.body;
+
+        if (!userID || !postID) {
+            return res.status(400).json({ message: "Unable to dislike" });
+        }
+
+        const deleteLike = await Likes.deleteOne({ postID, userID });
+
+        await PostModel.findByIdAndUpdate({ _id: postID }, { $inc: { likesCount: -1 } })
+
+        return res.status(200).json({ message: "Like Removed Successfully", deleteLike });
+    } catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.getLikesByUserID = async (req, res) => {
+    try {
+        const { userID } = req.params;
+
+        if (!userID) {
+            return res.status(401).json({ message: "Unable to Get Likes" });
+        }
+
+        const likes = await Likes.find({ userID });
+
+        return res.status(200).json({ message: "User Likes", likes })
     } catch (error) {
         return res.status(500).json({ message: "Server Down", error })
     }
