@@ -1,6 +1,7 @@
 const Bookmarks = require("../Model/Bookmarks");
 const Likes = require("../Model/Likes");
 const PostModel = require("../Model/post");
+const UserModel = require("../Model/UserModel");
 
 exports.addPost = async (req, res) => {
     try {
@@ -177,6 +178,31 @@ exports.UpdatePost = async (req, res) => {
 
         return res.status(200).json({ message: "Post Updated Successfully", updatedPost })
     } catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.getLikesDataInfo = async (req, res) => {
+    try {
+        const { postID } = req.params;
+
+        if (!postID) {
+            return res.status(400).json({ message: "Unable Get Likes Data" });
+        }
+
+        const LikesData = await Likes.find({ postID }).lean();
+
+        if (!LikesData.length === 0) {
+            return res.status(200).json({ message: "No likes found" });
+        }
+
+        const userIDs = [...new Set(LikesData.map((like) => like.userID))];
+
+        const FetchUserInfos = await UserModel.find({ _id: userIDs }).select("-password -email")
+
+        return res.status(200).json({ message: "Likes Data", Total_Likes: LikesData.length, FetchUserInfos })
+    }
+    catch (error) {
         return res.status(500).json({ message: "Server Down", error })
     }
 }
