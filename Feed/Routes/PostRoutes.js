@@ -10,7 +10,8 @@ const {
     RemoveLike,
     getLikesByUserID,
     deletePost,
-    UpdatePost
+    UpdatePost,
+    getLikesDataInfo
 } = require("../Controller/FeedController");
 const FeedRouter = express.Router();
 
@@ -24,6 +25,7 @@ FeedRouter.get("/all-posts", getAllPost);
 FeedRouter.get("/user-bookmarks/:userID", getUserBookmarks);
 FeedRouter.get("/user-bookmarks-by-user/:userID", getBookmarksByUserID);
 FeedRouter.get("/user-likes/:userID", getLikesByUserID);
+FeedRouter.get("/likes-data/:postID", getLikesDataInfo);
 
 //update Requests
 FeedRouter.put("/update-post", UpdatePost);
