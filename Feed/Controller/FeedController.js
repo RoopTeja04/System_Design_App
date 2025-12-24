@@ -164,3 +164,19 @@ exports.deletePost = async (req, res) => {
         return res.status(500).json({ message: "Server Down", error })
     }
 }
+
+exports.UpdatePost = async (req, res) => {
+    try {
+        const { title, des, postID } = req.body;
+
+        if (!title || !postID) {
+            return res.status(400).json({ message: "Unable to Update Post" })
+        }
+
+        const updatedPost = await PostModel.findByIdAndUpdate({ _id: postID }, { title, des }, { new: true });
+
+        return res.status(200).json({ message: "Post Updated Successfully", updatedPost })
+    } catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}

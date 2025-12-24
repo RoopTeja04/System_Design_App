@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import InfoModel from './InfoModel';
 import DeleteModel from './DeleteModel';
+import UpdateModel from './UpdateModel';
 dayjs.extend(relativeTime);
 
 const Posts = () => {
@@ -29,6 +30,7 @@ const Posts = () => {
     const [visibleInfoModel, setVisibleInfoModel] = React.useState(false);
     const [selectedPost, setSelectedPost] = React.useState(null);
     const [visibleDeleteModel, setVisibleDeleteModel] = React.useState(false);
+    const [visibleUpdateModel, setVisibleUpdateModel] = React.useState(false);
 
     React.useEffect(() => {
         fetchProfile();
@@ -139,6 +141,8 @@ const Posts = () => {
                                                         className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 flex items-center gap-3'
                                                         onClick={() => {
                                                             setOpenDropdown(null);
+                                                            setVisibleUpdateModel(!visibleUpdateModel);
+                                                            setSelectedPost(post);
                                                         }}
                                                     >
                                                         <MdEdit size={18} />
@@ -296,6 +300,14 @@ const Posts = () => {
                     post={selectedPost}
                     visibleDeleteModel={visibleDeleteModel}
                     setVisibleDeleteModel={setVisibleDeleteModel}
+                />
+            }
+            {
+                visibleUpdateModel &&
+                <UpdateModel
+                    post={selectedPost}
+                    visibleUpdateModel={visibleUpdateModel}
+                    setVisibleUpdateModel={setVisibleUpdateModel}
                 />
             }
         </div>
