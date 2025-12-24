@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom"
 import Login from '../Components/AuthComponents/Login';
 import Create from '../Components/AuthComponents/Create';
 import Forgot from '../Components/AuthComponents/Forgot';
-import Feed from '../Pages/Feed';
+import Feed from '../Pages/FeedSection/Feed';
 import Search from '../Pages/Search';
 import MainLayout from '../Components/Layout/MainLayout';
 import Profile from '../Components/GlobalComponents/Profile';

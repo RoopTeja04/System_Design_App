@@ -7,6 +7,9 @@ import { BiComment, BiShare } from 'react-icons/bi';
 import { IoCloseCircle } from 'react-icons/io5';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import InfoModel from './InfoModel';
+import DeleteModel from './DeleteModel';
+import UpdateModel from './UpdateModel';
 dayjs.extend(relativeTime);
 
 const Posts = () => {
@@ -24,6 +27,10 @@ const Posts = () => {
     const [openDropdown, setOpenDropdown] = React.useState(null);
     const [formData, setFormData] = React.useState(DefaultValues);
     const [visibleForm, setVisibleForm] = React.useState(false);
+    const [visibleInfoModel, setVisibleInfoModel] = React.useState(false);
+    const [selectedPost, setSelectedPost] = React.useState(null);
+    const [visibleDeleteModel, setVisibleDeleteModel] = React.useState(false);
+    const [visibleUpdateModel, setVisibleUpdateModel] = React.useState(false);
 
     React.useEffect(() => {
         fetchProfile();
@@ -132,10 +139,10 @@ const Posts = () => {
                                                 <div className='absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50 animate-fadeIn'>
                                                     <button
                                                         className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200 flex items-center gap-3'
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            console.log('Edit post', post);
+                                                        onClick={() => {
                                                             setOpenDropdown(null);
+                                                            setVisibleUpdateModel(!visibleUpdateModel);
+                                                            setSelectedPost(post);
                                                         }}
                                                     >
                                                         <MdEdit size={18} />
@@ -144,10 +151,10 @@ const Posts = () => {
 
                                                     <button
                                                         className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 flex items-center gap-3'
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            console.log('Delete post', post);
+                                                        onClick={() => {
                                                             setOpenDropdown(null);
+                                                            setVisibleDeleteModel(!visibleDeleteModel);
+                                                            setSelectedPost(post);
                                                         }}
                                                     >
                                                         <MdDelete size={18} />
@@ -156,10 +163,10 @@ const Posts = () => {
 
                                                     <button
                                                         className='w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200 flex items-center gap-3'
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            console.log('Info for post', post);
+                                                        onClick={() => {
                                                             setOpenDropdown(null);
+                                                            setVisibleInfoModel(!visibleInfoModel);
+                                                            setSelectedPost(post);
                                                         }}
                                                     >
                                                         <MdInfo size={18} />
@@ -174,14 +181,14 @@ const Posts = () => {
                                         <h2 className='text-lg font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-purple-600 transition-colors duration-200'>
                                             {post.title}
                                         </h2>
-                                        <div className='flex items-center gap-2'>
-                                            <div className='flex items-center gap-2'>
-                                                <AiOutlineHeart size={26} />
-                                                <span className='text-xl'>{post.likes.length}</span>
+                                        <div className='flex items-center gap-4'>
+                                            <div className='flex items-center gap-1'>
+                                                <AiOutlineHeart size={22} />
+                                                <span className='text-lg'>{post.likesCount}</span>
                                             </div>
-                                            <div className='flex items-center gap-2'>
-                                                <BiComment size={26} />
-                                                <span className='text-xl'>{post.comments.length}</span>
+                                            <div className='flex items-center gap-1'>
+                                                <BiComment size={22} />
+                                                <span className='text-lg'>{post.commentsCount}</span>
                                             </div>
                                         </div>
                                         <p className='text-xs text-gray-500'>{dayjs(post.createdAt).fromNow()}</p>
@@ -277,6 +284,31 @@ const Posts = () => {
                         </div>
                     </div>
                 )
+            }
+            {
+                visibleInfoModel &&
+                <InfoModel
+                    post={selectedPost}
+                    visibleInfoModel={visibleInfoModel}
+                    setVisibleInfoModel={setVisibleInfoModel}
+                />
+            }
+
+            {
+                visibleDeleteModel &&
+                <DeleteModel
+                    post={selectedPost}
+                    visibleDeleteModel={visibleDeleteModel}
+                    setVisibleDeleteModel={setVisibleDeleteModel}
+                />
+            }
+            {
+                visibleUpdateModel &&
+                <UpdateModel
+                    post={selectedPost}
+                    visibleUpdateModel={visibleUpdateModel}
+                    setVisibleUpdateModel={setVisibleUpdateModel}
+                />
             }
         </div>
     )
