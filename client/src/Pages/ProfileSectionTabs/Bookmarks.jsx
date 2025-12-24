@@ -7,10 +7,12 @@ import { CgProfile } from 'react-icons/cg';
 import { IoBookmarkOutline } from 'react-icons/io5';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { useNavigate } from 'react-router-dom';
 dayjs.extend(relativeTime);
 
 const Bookmarks = () => {
 
+    const Navigate = useNavigate();
     const userID = localStorage.getItem("UserID");
 
     const [BookmarksData, setBookmarksData] = React.useState([]);
@@ -109,7 +111,9 @@ const Bookmarks = () => {
                                 Save posts you love by clicking the bookmark icon.
                                 They'll appear here for easy access later!
                             </p>
-                            <button className='mt-6 px-6 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-purple-500/30'>
+                            <button
+                                className='mt-6 px-6 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-purple-500/30'
+                                onClick={() => Navigate('/main/feed')}>
                                 Explore Posts
                             </button>
                         </div>

@@ -92,10 +92,6 @@ exports.getBookmarksByUserID = async (req, res) => {
 
         const bookmarks = await Bookmarks.find({ userID }).populate("postID");
 
-        if (bookmarks.length === 0) {
-            return res.status(404).json({ message: "No Bookmarks found" })
-        }
-
         return res.status(200).json({ message: "User Bookmarks", bookmarks })
     } catch (error) {
         return res.status(500).json({ message: "Server Down", error })
@@ -148,6 +144,22 @@ exports.getLikesByUserID = async (req, res) => {
         const likes = await Likes.find({ userID });
 
         return res.status(200).json({ message: "User Likes", likes })
+    } catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.deletePost = async (req, res) => {
+    try {
+        const { postID } = req.params;
+
+        if (!postID) {
+            return res.status(400).json({ message: "Unable to Delete Post" })
+        }
+
+        await PostModel.findByIdAndDelete(postID);
+
+        res.status(200).json({ message: "Post Deleted Successfully" });
     } catch (error) {
         return res.status(500).json({ message: "Server Down", error })
     }

@@ -1,5 +1,16 @@
 const express = require("express");
-const { addPost, getAllPost, addBookmarks, getUserBookmarks, deleteBookmarks, getBookmarksByUserID, AddToLike, RemoveLike, getLikesByUserID } = require("../Controller/FeedController");
+const {
+    addPost,
+    getAllPost,
+    addBookmarks,
+    getUserBookmarks,
+    deleteBookmarks,
+    getBookmarksByUserID,
+    AddToLike,
+    RemoveLike,
+    getLikesByUserID,
+    deletePost
+} = require("../Controller/FeedController");
 const FeedRouter = express.Router();
 
 // Post Requests
@@ -16,5 +27,6 @@ FeedRouter.get("/user-likes/:userID", getLikesByUserID);
 // Delete Requests
 FeedRouter.delete("/delete-bookmark", deleteBookmarks);
 FeedRouter.delete("/remove-like", RemoveLike);
+FeedRouter.delete("/delete-post/:postID", deletePost);
 
 module.exports = FeedRouter;
