@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
 import EmojiPicker from "emoji-picker-react";
-import { BsEmojiSmile } from "react-icons/bs";
+import { BsEmojiSmile, BsThreeDots } from "react-icons/bs";
 
 const AddComments = ({ postID, closeComments, setDailyFeed }) => {
 
@@ -24,6 +24,7 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
     const [comments, setComments] = React.useState([]);
     const [formData, setFormData] = React.useState(DefaultValues);
     const [showEmoji, setShowEmoji] = React.useState(false);
+    const [openDropdown, setOpenDropdown] = React.useState(null);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -75,6 +76,18 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
         }
     }
 
+    const toggleDropDown = (index) => {
+        setOpenDropdown((prev) => (prev === index ? null : index));
+    }
+
+    React.useEffect(() => {
+        const handleClickOutside = () => setOpenDropdown(null);
+        if (openDropdown !== null) {
+            document.addEventListener('click', handleClickOutside);
+        }
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, [openDropdown]);
+
     return (
         <div className='fixed inset-0 z-50 p-8 flex items-center justify-end'>
             <div className='absolute inset-0 bg-black/70' onClick={closeComments} />
@@ -102,6 +115,42 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
                                             <div className='flex items-center gap-3'>
                                                 <span className='font-semibold text-gray-800'>{c.userName}</span>
                                                 <span>{dayjs(c.createdAt).fromNow()}</span>
+
+                                                {
+                                                    c.userID === getUserID && (
+                                                        <div className='relative'>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    toggleDropDown(index);
+                                                                }}
+                                                                className='text-gray-400 hover:text-gray-600 transition-colors duration-200 p-1 rounded-full hover:bg-gray-100'
+                                                            >
+                                                                <BsThreeDots size={18} />
+                                                            </button>
+                                                            {openDropdown === index && (
+                                                                <div
+                                                                    className="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-xl z-20 border border-gray-200"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                >
+                                                                    <button
+                                                                        onClick={() => handleEditComment(c._id)}
+                                                                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-md transition"
+                                                                    >
+                                                                        Edit
+                                                                    </button>
+
+                                                                    <button
+                                                                        onClick={() => handleDeleteComment(c._id)}
+                                                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-200 rounded-b-md transition"
+                                                                    >
+                                                                        Delete
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )
+                                                }
                                             </div>
                                             <p className='text-gray-800 mt-2'>- {c.comment}</p>
                                         </div>

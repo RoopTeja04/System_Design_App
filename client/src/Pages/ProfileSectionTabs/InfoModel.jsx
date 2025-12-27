@@ -6,11 +6,13 @@ import { MdCalendarToday } from 'react-icons/md';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import LikesInfo from './LikesInfo';
+import CommentsInfo from './CommentsInfo';
 dayjs.extend(relativeTime);
 
 const InfoModel = ({ post, visibleInfoModel, setVisibleInfoModel }) => {
 
     const [showLikes, setShowLikes] = React.useState(false);
+    const [showComments, setShowComments] = React.useState(false);
 
     return (
         <div className='fixed inset-0 z-50 p-8 flex items-center justify-center'>
@@ -47,7 +49,9 @@ const InfoModel = ({ post, visibleInfoModel, setVisibleInfoModel }) => {
                             </div>
                         </button>
 
-                        <div className='bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer'>
+                        <button
+                            onClick={() => setShowComments(!showComments)}
+                            className='bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer'>
                             <div className='flex flex-col items-center gap-2'>
                                 <div className='w-12 h-12 rounded-full flex items-center justify-center'>
                                     <BiComment size={40} />
@@ -55,7 +59,7 @@ const InfoModel = ({ post, visibleInfoModel, setVisibleInfoModel }) => {
                                 <p className='text-2xl font-bold text-gray-800'>{post.commentsCount}</p>
                                 <p className='text-xs font-medium text-gray-500 uppercase tracking-wide'>Comments</p>
                             </div>
-                        </div>
+                        </button>
 
                         <div className='bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow duration-200 cursor-pointer'>
                             <div className='flex flex-col items-center gap-2'>
@@ -86,6 +90,15 @@ const InfoModel = ({ post, visibleInfoModel, setVisibleInfoModel }) => {
                 showLikes && <LikesInfo
                     showLikes={showLikes}
                     setShowLikes={setShowLikes}
+                    post={post}
+                />
+            }
+
+            {
+                showComments &&
+                <CommentsInfo
+                    showComments={showComments}
+                    setShowComments={setShowComments}
                     post={post}
                 />
             }
