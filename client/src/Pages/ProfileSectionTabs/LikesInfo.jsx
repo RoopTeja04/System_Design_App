@@ -73,7 +73,6 @@ const LikesInfo = ({ showLikes, setShowLikes, post }) => {
                         ) : (
                             <div className='flex flex-col h-[40vh] justify-center items-center'>
                                 <p className='text-gray-500 text-2xl'>No Likes Yet</p>
-                                <p className='text-gray-400 text-sm'>Be the first to like this post!</p>
                             </div>
                         )
                     )}

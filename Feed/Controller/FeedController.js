@@ -220,6 +220,8 @@ exports.AddComments = async (req, res) => {
             postID, userID, userName, comment
         })
 
+        await PostModel.findByIdAndUpdate({ _id: postID }, { $inc: { commentsCount: 1 } })
+
         return res.status(200).json({ message: "Comment added Successfully", createdComment })
     } catch (error) {
         return res.status(500).json({ message: "Server Down", error })
@@ -228,7 +230,7 @@ exports.AddComments = async (req, res) => {
 
 exports.RemoveComments = async (req, res) => {
     try {
-        const { commentID } = req.params;
+        const { commentID, userID } = req.params;
 
         const findComment = await CommentModel.findById(commentID);
 
@@ -236,7 +238,13 @@ exports.RemoveComments = async (req, res) => {
             return res.status(404).json({ message: "Comment Not Found" })
         }
 
+        if (userID !== findComment.userID) {
+            return res.status(401).json({ message: "Unauthorized" })
+        }
+
         const DeletedComment = await CommentModel.findByIdAndDelete(commentID);
+
+        await PostModel.findByIdAndUpdate({ _id: postID }, { $inc: { commentsCount: -1 } })
 
         return res.status(200).json({ message: "Comment Deleted Successfully", DeletedComment })
     } catch (error) {
@@ -261,6 +269,23 @@ exports.updateComment = async (req, res) => {
         const updatedComment = await CommentModel.findByIdAndUpdate(commentID, { comment }, { new: true });
 
         return res.status(200).json({ message: "Comment Updated Successfully", updatedComment })
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.getCommentsByPostID = async (req, res) => {
+    try {
+        const { postID } = req.params;
+
+        if (!postID) {
+            return res.status(400).json({ message: "Unable to Get Comments" })
+        }
+
+        const comments = await CommentModel.find({ postID }).lean();
+
+        return res.status(200).json({ message: "Comments", commentsCount: comments.length, comments })
     }
     catch (error) {
         return res.status(500).json({ message: "Server Down", error })

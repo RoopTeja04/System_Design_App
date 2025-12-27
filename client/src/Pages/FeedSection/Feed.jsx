@@ -8,6 +8,7 @@ import { IoCloseCircle } from 'react-icons/io5';
 import { CgProfile } from 'react-icons/cg';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import AddComments from './AddComments';
 dayjs.extend(relativeTime);
 
 const Feed = () => {
@@ -27,6 +28,7 @@ const Feed = () => {
     const [addedBookmarks, setAddedBookmarks] = React.useState([]);
     const [addedLikes, setAddedLikes] = React.useState([]);
     const [DailyFeed, setDailyFeed] = React.useState([]);
+    const [activeComment, setActiveComment] = React.useState(null);
 
     React.useEffect(() => {
         validateUser();
@@ -342,7 +344,10 @@ const Feed = () => {
                                                     }
                                                     <span className='font-medium'>{post.likesCount}</span>
                                                 </button>
-                                                <button className='flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors duration-200 group'>
+                                                <button
+                                                    onClick={() => setActiveComment(post)}
+                                                    className='flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors duration-200 group'
+                                                >
                                                     <BiComment size={24} className='group-hover:scale-110 transition-transform duration-200' />
                                                     <span className='font-medium'>{post.commentsCount}</span>
                                                 </button>
@@ -381,6 +386,15 @@ const Feed = () => {
                         </div>
                     </div>
                 )
+            }
+
+            {
+                activeComment &&
+                <AddComments
+                    postID={activeComment}
+                    closeComments={() => setActiveComment(null)}
+                    setDailyFeed={setDailyFeed}
+                />
             }
         </div>
     )
