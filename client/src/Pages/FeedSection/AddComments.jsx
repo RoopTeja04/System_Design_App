@@ -25,6 +25,8 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
     const [formData, setFormData] = React.useState(DefaultValues);
     const [showEmoji, setShowEmoji] = React.useState(false);
     const [openDropdown, setOpenDropdown] = React.useState(null);
+    const [editingCommentId, setEditingCommentId] = React.useState(null);
+    const [editedComment, setEditedComment] = React.useState("");
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -68,7 +70,7 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
                     )
                 )
                 setFormData(DefaultValues);
-                setShowEmoji(!showEmoji);
+                setShowEmoji(false);
                 fetchCommentsByPostID();
             }
         } catch (err) {
@@ -87,6 +89,45 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
         }
         return () => document.removeEventListener('click', handleClickOutside);
     }, [openDropdown]);
+
+    const handleDeleteComment = async ({ commentID, userID }) => {
+        try {
+            const res = await axios.delete(`http://localhost:8080/api/feed/remove-comment/${commentID}/${userID}`);
+            if (res.status === 200) {
+                setDailyFeed(prev =>
+                    prev.map(p =>
+                        p._id === formData.postID ? { ...p, commentsCount: p.commentsCount - 1 } : p
+                    )
+                )
+                fetchCommentsByPostID();
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const saveEditComment = async () => {
+        try {
+            const res = await axios.put(`http://localhost:8080/api/feed/update-comment`, {
+                commentID: editingCommentId,
+                userID: getUserID,
+                comment: editedComment,
+            });
+            if (res.status === 200) {
+                setEditingCommentId(null);
+                setEditedComment("");
+                fetchCommentsByPostID();
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const enableEditMode = (comment) => {
+        setEditingCommentId(comment._id);
+        setEditedComment(comment.comment);
+        setOpenDropdown(null);
+    }
 
     return (
         <div className='fixed inset-0 z-50 p-8 flex items-center justify-end'>
@@ -130,19 +171,19 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
                                                             </button>
                                                             {openDropdown === index && (
                                                                 <div
-                                                                    className="absolute left-0 mt-2 w-40 bg-white rounded-md shadow-xl z-20 border border-gray-200"
+                                                                    className="absolute left-12 -top-8 mt-2 w-40 bg-white rounded-md shadow-xl z-20 border border-gray-200"
                                                                     onClick={(e) => e.stopPropagation()}
                                                                 >
                                                                     <button
-                                                                        onClick={() => handleEditComment(c._id)}
+                                                                        onClick={() => enableEditMode(c)}
                                                                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-md transition"
                                                                     >
                                                                         Edit
                                                                     </button>
 
                                                                     <button
-                                                                        onClick={() => handleDeleteComment(c._id)}
-                                                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-200 rounded-b-md transition"
+                                                                        onClick={() => handleDeleteComment({ commentID: c._id, userID: c.userID })}
+                                                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-200 rounded-b-md transition cursor-pointer"
                                                                     >
                                                                         Delete
                                                                     </button>
@@ -152,7 +193,36 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
                                                     )
                                                 }
                                             </div>
-                                            <p className='text-gray-800 mt-2'>- {c.comment}</p>
+                                            {
+                                                editingCommentId === c._id ? (
+                                                    <div className="mt-2 text-left">
+                                                        <input
+                                                            type="text"
+                                                            value={editedComment}
+                                                            onChange={(e) => setEditedComment(e.target.value)}
+                                                            className="w-full p-2 border border-blue-500 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 mb-2 text-black"
+                                                            autoFocus
+                                                        />
+                                                        <div className="flex gap-2 justify-end">
+                                                            <button
+                                                                onClick={() => setEditingCommentId(null)}
+                                                                className="text-xs px-3 py-1 text-gray-600 hover:bg-gray-100 rounded-md transition border border-gray-200"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                            <button
+                                                                onClick={saveEditComment}
+                                                                className="text-xs px-3 py-1 bg-purple-600 text-white hover:bg-purple-700 rounded-md transition"
+                                                            >
+                                                                Save
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <p className='text-gray-800 mt-2 text-left'>- {c.comment}</p>
+                                                )
+                                            }
+
                                         </div>
                                     ))
                                 }
