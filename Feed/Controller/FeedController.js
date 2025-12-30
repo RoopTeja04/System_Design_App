@@ -244,7 +244,7 @@ exports.RemoveComments = async (req, res) => {
 
         const DeletedComment = await CommentModel.findByIdAndDelete(commentID);
 
-        await PostModel.findByIdAndUpdate({ _id: postID }, { $inc: { commentsCount: -1 } })
+        await PostModel.findByIdAndUpdate({ _id: findComment.postID }, { $inc: { commentsCount: -1 } })
 
         return res.status(200).json({ message: "Comment Deleted Successfully", DeletedComment })
     } catch (error) {
