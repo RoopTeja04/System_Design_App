@@ -17,6 +17,8 @@ const CommentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-}, { timestamps: true })
+}, { timestamps: true });
+
+CommentSchema.index({ postID: 1, createdAt: -1 });
 
 module.exports = mongoose.model("CommentSchema", CommentSchema);

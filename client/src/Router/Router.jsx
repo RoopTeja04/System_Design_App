@@ -7,6 +7,7 @@ import Feed from '../Pages/FeedSection/Feed';
 import Search from '../Pages/Search';
 import MainLayout from '../Components/Layout/MainLayout';
 import Profile from '../Components/GlobalComponents/Profile';
+import EditProfile from '../Pages/ProfileSectionTabs/EditProfile';
 
 const Router = createBrowserRouter([
     { path: "/", element: <Login /> },
@@ -17,7 +18,12 @@ const Router = createBrowserRouter([
         children: [
             { path: "feed", element: <Feed /> },
             { path: "search", element: <Search /> },
-            { path: "profile", element: <Profile /> },
+            {
+                path: "profile", element: <Profile />,
+                children: [
+                    { path: "edit-profile", element: <EditProfile /> },
+                ]
+            },
         ]
     }
 ])
