@@ -23,6 +23,8 @@ const Profile = () => {
     const [profile, setProfile] = React.useState([]);
     const [view, setView] = React.useState("posts");
     const [postsCount, setPostCount] = React.useState(0);
+    const [followingCount, setFollowingCount] = React.useState(0);
+    const [followersCount, setFollowersCount] = React.useState(0);
 
     const renderComponent = () => {
         switch (view) {
@@ -38,6 +40,8 @@ const Profile = () => {
     React.useEffect(() => {
         fetchUserProfle();
         fetchPostsCountbyProfileID();
+        fetchFollowingCountByProfileID();
+        fetchFollowersCountByProfileID();
     }, []);
 
     const fetchUserProfle = async () => {
@@ -58,6 +62,28 @@ const Profile = () => {
                 setPostCount(res.data.Posts.length);
         }
         catch (err) {
+            console.log(err)
+        }
+    }
+
+    const fetchFollowingCountByProfileID = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/feed/following/${getUserID}`);
+            if (res.status === 200) {
+                setFollowingCount(res.data.Count);
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const fetchFollowersCountByProfileID = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/feed/followers/${getUserID}`);
+            if (res.status === 200) {
+                setFollowersCount(res.data.Count);
+            }
+        } catch (err) {
             console.log(err)
         }
     }
@@ -103,11 +129,11 @@ const Profile = () => {
                                                 <span className="text-sm text-gray-600">Posts</span>
                                             </div>
                                             <div className="text-center md:text-left cursor-pointer hover:text-purple-600 transition-colors duration-200">
-                                                <span className="block text-lg font-semibold text-gray-800 text-center">1,234</span>
+                                                <span className="block text-lg font-semibold text-gray-800 text-center">{followersCount}</span>
                                                 <span className="text-sm text-gray-600">Followers</span>
                                             </div>
                                             <div className="text-center md:text-left cursor-pointer hover:text-purple-600 transition-colors duration-200">
-                                                <span className="block text-lg font-semibold text-gray-800 text-center">567</span>
+                                                <span className="block text-lg font-semibold text-gray-800 text-center">{followingCount}</span>
                                                 <span className="text-sm text-gray-600">Following</span>
                                             </div>
                                         </div>

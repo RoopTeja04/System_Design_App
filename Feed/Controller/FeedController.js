@@ -3,6 +3,7 @@ const CommentModel = require("../Model/Comment");
 const Likes = require("../Model/Likes");
 const PostModel = require("../Model/post");
 const UserModel = require("../Model/UserModel");
+const FollowModel = require("../Model/Follow");
 
 exports.addPost = async (req, res) => {
     try {
@@ -286,6 +287,57 @@ exports.getCommentsByPostID = async (req, res) => {
         const comments = await CommentModel.find({ postID }).lean();
 
         return res.status(200).json({ message: "Comments", commentsCount: comments.length, comments })
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.AddFollow = async (req, res) => {
+    try {
+        const { followerID, followingID, userName } = req.body;
+
+        if (!followerID || !followingID) {
+            return res.status(400).json({ message: "Unable to Follow" })
+        }
+
+        const CreatedFollow = await FollowModel.create({ followerID, followingID, userName });
+
+        return res.status(200).json({ message: "Following Successfully", CreatedFollow });
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.getFollowingById = async (req, res) => {
+    try {
+        const { userID } = req.params;
+
+        if (!userID) {
+            return res.status(400).json({ message: "unable to fetch following" });
+        }
+
+        const following = await FollowModel.find({ followerID: userID }).populate("followingID", "-password -email");
+
+        return res.status(200).json({ message: "Following", Count: following.length, following })
+    }
+    catch (error) {
+        return res.status(500).json({ message: "Server Down", error })
+    }
+}
+
+exports.getFollowersByID = async (req, res) => {
+    try {
+        const { userID } = req.params;
+
+        if (!userID) {
+            return res.status(400).json({ message: "unable to fetch following" });
+        }
+
+        const followers = await FollowModel.find({ followingID: userID }).populate("followerID", "-password -email");
+
+        return res.status(200).json({ message: "Followers", Count: followers.length, followers })
     }
     catch (error) {
         return res.status(500).json({ message: "Server Down", error })
