@@ -204,6 +204,22 @@ const Feed = () => {
         }
     }
 
+    const handleFollowButton = async ({ UserID, userName }) => {
+        try {
+            const res = await axios.post("http://localhost:8080/api/feed/add-follow", {
+                followerID: getUserID,
+                followingID: UserID,
+                userName: userName,
+            })
+
+            if (res.status === 200) {
+                alert(res.data.message);
+            }
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
     return (
         <div className="max-w-3xl mx-auto space-y-6">
             {
@@ -320,6 +336,19 @@ const Feed = () => {
                                             <div>
                                                 <h3 className='font-semibold text-gray-800'>{post.profileName}</h3>
                                                 <p className='text-sm text-gray-500'>{dayjs(post.createdAt).fromNow()}</p>
+                                            </div>
+                                            <div className="ml-auto">
+                                                {
+                                                    getUserID === post.userID ? null :
+                                                        <>
+                                                            <button
+                                                                onClick={() => handleFollowButton({ UserID: post.userID, userName: post.profileName })}
+                                                                className='bg-blue-500 text-white px-6 py-1.5 rounded-md ml-4 cursor-pointer'
+                                                            >
+                                                                Follow
+                                                            </button>
+                                                        </>
+                                                }
                                             </div>
                                         </div>
                                         <div className='mb-4'>

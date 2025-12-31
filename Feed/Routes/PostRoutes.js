@@ -16,6 +16,9 @@ const {
     RemoveComments,
     updateComment,
     getCommentsByPostID,
+    AddFollow,
+    getFollowingById,
+    getFollowersByID,
 } = require("../Controller/FeedController");
 const FeedRouter = express.Router();
 
@@ -24,6 +27,7 @@ FeedRouter.post("/upload-post", addPost);
 FeedRouter.post("/add-bookmarks", addBookmarks);
 FeedRouter.post("/add-like", AddToLike);
 FeedRouter.post("/add-comment", AddComments);
+FeedRouter.post("/add-follow", AddFollow);
 
 // Get Requests
 FeedRouter.get("/all-posts", getAllPost);
@@ -32,6 +36,8 @@ FeedRouter.get("/user-bookmarks-by-user/:userID", getBookmarksByUserID);
 FeedRouter.get("/user-likes/:userID", getLikesByUserID);
 FeedRouter.get("/likes-data/:postID", getLikesDataInfo);
 FeedRouter.get("/comments/:postID", getCommentsByPostID);
+FeedRouter.get("/following/:userID", getFollowingById);
+FeedRouter.get("/followers/:userID", getFollowersByID);
 
 //update Requests
 FeedRouter.put("/update-post", UpdatePost);
