@@ -309,37 +309,3 @@ exports.AddFollow = async (req, res) => {
         return res.status(500).json({ message: "Server Down", error })
     }
 }
-
-exports.getFollowingById = async (req, res) => {
-    try {
-        const { userID } = req.params;
-
-        if (!userID) {
-            return res.status(400).json({ message: "unable to fetch following" });
-        }
-
-        const following = await FollowModel.find({ followerID: userID }).populate("followingID", "-password -email");
-
-        return res.status(200).json({ message: "Following", Count: following.length, following })
-    }
-    catch (error) {
-        return res.status(500).json({ message: "Server Down", error })
-    }
-}
-
-exports.getFollowersByID = async (req, res) => {
-    try {
-        const { userID } = req.params;
-
-        if (!userID) {
-            return res.status(400).json({ message: "unable to fetch following" });
-        }
-
-        const followers = await FollowModel.find({ followingID: userID }).populate("followerID", "-password -email");
-
-        return res.status(200).json({ message: "Followers", Count: followers.length, followers })
-    }
-    catch (error) {
-        return res.status(500).json({ message: "Server Down", error })
-    }
-}

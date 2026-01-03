@@ -6,6 +6,7 @@ import { BsGrid3X3 } from "react-icons/bs";
 import Posts from '../../Pages/ProfileSectionTabs/Posts';
 import Bookmarks from '../../Pages/ProfileSectionTabs/Bookmarks';
 import { useNavigate, Outlet, useLocation } from 'react-router-dom';
+import MainTab from '../../Pages/ProfileSectionTabs/ToggoleTabs/MainTab';
 
 const Profile = () => {
 
@@ -25,6 +26,8 @@ const Profile = () => {
     const [postsCount, setPostCount] = React.useState(0);
     const [followingCount, setFollowingCount] = React.useState(0);
     const [followersCount, setFollowersCount] = React.useState(0);
+    const [Viewtab, setViewTab] = React.useState(false);
+    const [TabState, setTabState] = React.useState("");
 
     const renderComponent = () => {
         switch (view) {
@@ -68,7 +71,7 @@ const Profile = () => {
 
     const fetchFollowingCountByProfileID = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/feed/following/${getUserID}`);
+            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-following/${getUserID}`);
             if (res.status === 200) {
                 setFollowingCount(res.data.Count);
             }
@@ -79,7 +82,7 @@ const Profile = () => {
 
     const fetchFollowersCountByProfileID = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/feed/followers/${getUserID}`);
+            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-followers/${getUserID}`);
             if (res.status === 200) {
                 setFollowersCount(res.data.Count);
             }
@@ -128,11 +131,17 @@ const Profile = () => {
                                                 <span className="block text-lg font-semibold text-gray-800 text-center">{postsCount}</span>
                                                 <span className="text-sm text-gray-600">Posts</span>
                                             </div>
-                                            <div className="text-center md:text-left cursor-pointer hover:text-purple-600 transition-colors duration-200">
+                                            <div
+                                                onClick={() => { setViewTab(!Viewtab), setTabState("Followers") }}
+                                                className="text-center md:text-left cursor-pointer hover:text-purple-600 transition-colors duration-200"
+                                            >
                                                 <span className="block text-lg font-semibold text-gray-800 text-center">{followersCount}</span>
                                                 <span className="text-sm text-gray-600">Followers</span>
                                             </div>
-                                            <div className="text-center md:text-left cursor-pointer hover:text-purple-600 transition-colors duration-200">
+                                            <div
+                                                onClick={() => { setViewTab(!Viewtab), setTabState("Following") }}
+                                                className="text-center md:text-left cursor-pointer hover:text-purple-600 transition-colors duration-200"
+                                            >
                                                 <span className="block text-lg font-semibold text-gray-800 text-center">{followingCount}</span>
                                                 <span className="text-sm text-gray-600">Following</span>
                                             </div>
@@ -172,6 +181,17 @@ const Profile = () => {
                             {renderComponent()}
                         </div>
                     </div>
+                )
+            }
+
+            {
+                Viewtab && (
+                    <MainTab
+                        TabState={TabState}
+                        setTabState={setTabState}
+                        Viewtab={Viewtab}
+                        setViewtab={setViewTab}
+                    />
                 )
             }
 
