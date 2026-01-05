@@ -1,4 +1,4 @@
-name: First CI Workflow
+name: Node.js CI - Hello World
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
  
 jobs:
-  build:
+  ci: 
     runs-on: ubuntu-latest
 
     steps:
@@ -16,3 +16,14 @@ jobs:
 
       - name: Say Hello
         run: echo "Hello from CI Pipeline 🚀"		
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run app
+        run: npm start
