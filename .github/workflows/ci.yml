@@ -1,29 +1,30 @@
-name: Node.js CI - Hello World
+name: Client CI
 
 on:
   push:
     branches: [main]
+    paths:
+      - "client/**"
   pull_request:
     branches: [main]
- 
+    paths:
+      - "client/**"
+
 jobs:
-  ci: 
+  client-build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Say Hello
-        run: echo "Hello from CI Pipeline 🚀"		
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
       - name: Install dependencies
         run: npm install
+        working-directory: client
 
-      - name: Run app
-        run: npm start
+      - name: Build client
+        run: npm run build
+        working-directory: client
