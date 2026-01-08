@@ -7,4 +7,4 @@ AuthRouter.post("/login", Login);
 AuthRouter.post("/forgot-password", forgotPassword);
 AuthRouter.get("/validate-user/:userID", ValidateUserperRequest);
 
-module.exports = AuthRouter
+module.exports = AuthRouter;
