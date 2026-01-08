@@ -30,11 +30,7 @@ const Feed = () => {
     const [DailyFeed, setDailyFeed] = React.useState([]);
     const [activeComment, setActiveComment] = React.useState(null);
 
-    React.useEffect(() => {
-        validateUser();
-    }, []);
-
-    const validateUser = async () => {
+    const validateUser = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/auth/validate-user/${getUserID}`);
             if (res.status === 200)
@@ -42,7 +38,11 @@ const Feed = () => {
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
+
+    React.useEffect(() => {
+        validateUser();
+    }, [validateUser]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -78,11 +78,7 @@ const Feed = () => {
         }
     }
 
-    React.useEffect(() => {
-        getAllPosts(UserStatus);
-    }, [UserStatus]);
-
-    const getAllPosts = async (UserStatus) => {
+    const getAllPosts = React.useCallback(async (UserStatus) => {
         try {
             if (UserStatus) {
                 const res = await axios.get("http://localhost:8080/api/feed/all-posts");
@@ -94,7 +90,11 @@ const Feed = () => {
         catch (err) {
             console.log(err)
         }
-    }
+    }, []);
+
+    React.useEffect(() => {
+        getAllPosts(UserStatus);
+    }, [UserStatus, getAllPosts]);
 
     const handleAddBookmark = async ({ postID }) => {
         try {
@@ -127,11 +127,7 @@ const Feed = () => {
         }
     }
 
-    React.useEffect(() => {
-        fetchAddedBookmarks();
-    }, []);
-
-    const fetchAddedBookmarks = async () => {
+    const fetchAddedBookmarks = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/api/feed/user-bookmarks/${getUserID}`);
             if (res.status === 200) {
@@ -140,13 +136,13 @@ const Feed = () => {
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
 
     React.useEffect(() => {
-        fetchAddedLikes();
-    }, []);
+        fetchAddedBookmarks();
+    }, [fetchAddedBookmarks]);
 
-    const fetchAddedLikes = async () => {
+    const fetchAddedLikes = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/api/feed/user-likes/${getUserID}`);
             if (res.status === 200) {
@@ -155,7 +151,11 @@ const Feed = () => {
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
+
+    React.useEffect(() => {
+        fetchAddedLikes();
+    }, [fetchAddedLikes]);
 
     const handleLikeFunction = async ({ postID }) => {
         try {

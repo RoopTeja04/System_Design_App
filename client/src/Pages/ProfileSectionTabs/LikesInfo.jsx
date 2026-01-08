@@ -9,11 +9,7 @@ const LikesInfo = ({ showLikes, setShowLikes, post }) => {
     const [data, setData] = React.useState([]);
     const [isLoading, setIsLoading] = React.useState(true);
 
-    React.useEffect(() => {
-        fetchLikes();
-    }, []);
-
-    const fetchLikes = async () => {
+    const fetchLikes = React.useCallback(async () => {
         setIsLoading(true);
         try {
             const res = await axios.get(`http://localhost:8080/api/feed/likes-data/${post._id}`);
@@ -23,7 +19,11 @@ const LikesInfo = ({ showLikes, setShowLikes, post }) => {
         } finally {
             setIsLoading(false);
         }
-    }
+    }, [post._id]);
+
+    React.useEffect(() => {
+        fetchLikes();
+    }, [fetchLikes]);
 
     return (
         <div className='fixed inset-0 z-50 p-8 flex items-center justify-start'>

@@ -32,11 +32,7 @@ const Posts = () => {
     const [visibleDeleteModel, setVisibleDeleteModel] = React.useState(false);
     const [visibleUpdateModel, setVisibleUpdateModel] = React.useState(false);
 
-    React.useEffect(() => {
-        fetchProfile();
-    })
-
-    const fetchProfile = async () => {
+    const fetchProfile = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/profile-service/profile/view-posts/${getUserID}`);
             if (res.status === 200)
@@ -45,13 +41,9 @@ const Posts = () => {
         catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
 
-    React.useEffect(() => {
-        validateUser();
-    }, []);
-
-    const validateUser = async () => {
+    const validateUser = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/auth/validate-user/${getUserID}`);
             if (res.status === 200)
@@ -59,7 +51,15 @@ const Posts = () => {
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
+
+    React.useEffect(() => {
+        fetchProfile();
+    }, [fetchProfile]);
+
+    React.useEffect(() => {
+        validateUser();
+    }, [validateUser]);
 
     const toggleDropDown = (index) => {
         setOpenDropdown((prev) => (prev === index ? null : index));

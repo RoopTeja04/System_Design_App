@@ -8,11 +8,7 @@ const Followers = () => {
 
     const [followersData, setFollowersData] = React.useState([]);
 
-    React.useEffect(() => {
-        fetchFollowersCountByProfileID();
-    }, []);
-
-    const fetchFollowersCountByProfileID = async () => {
+    const fetchFollowersCountByProfileID = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/profile-service/profile/view-followers/${getUserID}`);
             if (res.status === 200) {
@@ -21,7 +17,11 @@ const Followers = () => {
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
+
+    React.useEffect(() => {
+        fetchFollowersCountByProfileID();
+    }, [fetchFollowersCountByProfileID]);
 
     return (
         <div className='space-y-3'>

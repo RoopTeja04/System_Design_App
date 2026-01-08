@@ -8,18 +8,18 @@ const CommentsInfo = ({ showComments, setShowComments, post }) => {
 
     const [data, setData] = React.useState([]);
 
-    React.useEffect(() => {
-        fetchComments();
-    }, []);
-
-    const fetchComments = async () => {
+    const fetchComments = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/api/feed/comments/${post._id}`);
             setData(res.data);
         } catch (err) {
             console.log(err);
         }
-    }
+    }, [post._id]);
+
+    React.useEffect(() => {
+        fetchComments();
+    }, [fetchComments]);
 
     return (
         <div className='fixed inset-0 z-50 p-8 flex items-center justify-end'>

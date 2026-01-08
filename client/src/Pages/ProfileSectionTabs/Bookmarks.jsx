@@ -17,11 +17,7 @@ const Bookmarks = () => {
 
     const [BookmarksData, setBookmarksData] = React.useState([]);
 
-    React.useEffect(() => {
-        fetchBookmarks()
-    }, []);
-
-    const fetchBookmarks = async () => {
+    const fetchBookmarks = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/api/feed/user-bookmarks-by-user/${userID}`);
             if (res.status === 200) {
@@ -30,7 +26,11 @@ const Bookmarks = () => {
         } catch (err) {
             console.log(err)
         }
-    };
+    }, [userID]);
+
+    React.useEffect(() => {
+        fetchBookmarks()
+    }, [fetchBookmarks]);
 
     const handleDeleteBookmark = async ({ bookmarkID }) => {
         try {
