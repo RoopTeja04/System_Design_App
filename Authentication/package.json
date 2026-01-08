@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/package",
   "name": "practice-server-rooted",
   "version": "1.0.0",
   "scripts": {
@@ -11,7 +10,7 @@
     "start:server1": "node server1.js",
     "start:server2": "node server2.js",
     "test": "echo \"Tests passed (placeholder)\"",
-    "lint": "eslint ."
+    "lint": "eslint \"**/*.js\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
