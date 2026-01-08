@@ -33,7 +33,7 @@ jobs:
         working-directory: Authentication
       - run: npm run lint
         working-directory: Authentication
-      - run: npm test || echo "No tests"
+      - run: npm test
         working-directory: Authentication
 
   feed-ci:
