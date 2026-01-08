@@ -40,14 +40,7 @@ const Profile = () => {
         }
     }
 
-    React.useEffect(() => {
-        fetchUserProfle();
-        fetchPostsCountbyProfileID();
-        fetchFollowingCountByProfileID();
-        fetchFollowersCountByProfileID();
-    }, []);
-
-    const fetchUserProfle = async () => {
+    const fetchUserProfle = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/profile-service/profile/view-profile/${getUserID}`);
             if (res.status === 200) {
@@ -56,9 +49,9 @@ const Profile = () => {
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
 
-    const fetchPostsCountbyProfileID = async () => {
+    const fetchPostsCountbyProfileID = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/profile-service/profile/view-posts/${getUserID}`);
             if (res.status === 200)
@@ -67,9 +60,9 @@ const Profile = () => {
         catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
 
-    const fetchFollowingCountByProfileID = async () => {
+    const fetchFollowingCountByProfileID = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/profile-service/profile/view-following/${getUserID}`);
             if (res.status === 200) {
@@ -78,9 +71,9 @@ const Profile = () => {
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
 
-    const fetchFollowersCountByProfileID = async () => {
+    const fetchFollowersCountByProfileID = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/profile-service/profile/view-followers/${getUserID}`);
             if (res.status === 200) {
@@ -89,7 +82,14 @@ const Profile = () => {
         } catch (err) {
             console.log(err)
         }
-    }
+    }, [getUserID]);
+
+    React.useEffect(() => {
+        fetchUserProfle();
+        fetchPostsCountbyProfileID();
+        fetchFollowingCountByProfileID();
+        fetchFollowersCountByProfileID();
+    }, [fetchUserProfle, fetchPostsCountbyProfileID, fetchFollowingCountByProfileID, fetchFollowersCountByProfileID]);
 
     return (
         <>

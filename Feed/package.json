@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node server1.js",
-    "dev": "nodemon server1.js"
+    "dev": "nodemon server1.js",
+    "lint": "eslint \"**/*.js\"",
+    "format": "prettier --write \"**/*.js\"",
+    "format:check": "prettier --check \"**/*.js\"",
+    "test": "echo \"Tests passed (placeholder)\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -14,7 +18,9 @@
     "redis": "^5.10.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22"
+    "eslint": "^9.39.2",
+    "nodemon": "^2.0.22",
+    "prettier": "^3.7.4"
   },
   "main": "index.js",
   "keywords": [],

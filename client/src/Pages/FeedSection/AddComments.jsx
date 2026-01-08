@@ -14,12 +14,12 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
 
     const getUserID = localStorage.getItem("UserID");
 
-    const DefaultValues = {
+    const DefaultValues = React.useMemo(() => ({
         postID: postID._id,
         UserID: getUserID,
         userName: postID.profileName,
         comment: "",
-    }
+    }), [postID._id, getUserID, postID.profileName]);
 
     const [comments, setComments] = React.useState([]);
     const [formData, setFormData] = React.useState(DefaultValues);
@@ -36,12 +36,7 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
         setFormData({ ...formData, comment: formData.comment + emojiData.emoji });
     }
 
-    React.useEffect(() => {
-        setFormData(DefaultValues);
-        fetchCommentsByPostID();
-    }, []);
-
-    const fetchCommentsByPostID = async () => {
+    const fetchCommentsByPostID = React.useCallback(async () => {
         try {
             const res = await axios.get(`http://localhost:8080/api/feed/comments/${postID._id}`);
             if (res.status === 200) {
@@ -50,7 +45,12 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
         } catch (err) {
             console.log(err);
         }
-    }
+    }, [postID._id]);
+
+    React.useEffect(() => {
+        setFormData(DefaultValues);
+        fetchCommentsByPostID();
+    }, [DefaultValues, fetchCommentsByPostID]);
 
     const handleUploadComment = async () => {
         try {

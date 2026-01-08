@@ -50,7 +50,7 @@ const Login = () => {
             }
         }
         findToken();
-    }, [])
+    }, [navigate])
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
