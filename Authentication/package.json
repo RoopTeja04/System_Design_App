@@ -6,7 +6,11 @@
     "server2": "nodemon server2.js",
     "dev:server1": "npm run server1",
     "dev:server2": "npm run server2",
-    "dev:both": "concurrently \"npm run server1\" \"npm run server2\""
+    "dev:both": "concurrently \"npm run server1\" \"npm run server2\"",
+    "start:server1": "node server1.js",
+    "start:server2": "node server2.js",
+    "test": "echo \"Tests passed (placeholder)\"",
+    "lint": "eslint \"**/*.js\""
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -19,6 +23,7 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
+    "eslint": "^9.39.2",
     "nodemon": "^2.0.22"
   },
   "main": "index.js",

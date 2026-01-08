@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-    res.send("server 5001 is Running")
+    res.send("server 5001 is Running");
 });
 
 app.use("/auth", AuthRouter);

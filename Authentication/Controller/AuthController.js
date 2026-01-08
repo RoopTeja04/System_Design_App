@@ -112,11 +112,13 @@ exports.ValidateUserperRequest = async (req, res) => {
     const FindedUser = await UserModel.findById(userID);
 
     if (!FindedUser) {
-      return res.status(404).json({ message: "User Not Validated" })
+      return res.status(404).json({ message: "User Not Validated" });
     }
 
-    return res.status(200).json({ message: "Good To Go", FindedUser })
+    return res.status(200).json({ message: "Good To Go", FindedUser });
   } catch (err) {
     res.status(500).json({ message: "Server Down" });
   }
-}
+};
+
+var a = 10; 
