@@ -31,15 +31,45 @@ const DeactiveAccount = () => {
                         the button below to confirm your account deactivation.
                     </p>
 
+                    <div className='flex space-x-8 mt-4'>
+                        <select
+                            className="w-68 px-4 py-2 border border-gray-400 rounded-md focus:cursor-pointer"
+                            placeholder="Select a Reason"
+                        >
+                            <option value="">Select a Reason</option>
+                            <option value="privacy">I have privacy concerns</option>
+                            <option value="not-useful">I don’t find this app useful anymore</option>
+                            <option value="too-many-notifications">Too many notifications</option>
+                            <option value="created-another-account">I created another account</option>
+                            <option value="taking-break">I’m taking a break</option>
+                            <option value="performance">App is slow or buggy</option>
+                            <option value="content">I don’t like the content I see</option>
+                            <option value="security">I’m worried about account security</option>
+                            <option value="other">Other reason</option>
+                        </select>
+                        <select
+                            className='w-68 px-4 py-2 border border-gray-400 rounded-md focus:cursor-pointer'
+                            placeholder="Select Duration"
+                        >
+                            <option value="">Select Duration</option>
+                            <option value="1">1 Day</option>
+                            <option value="7">7 Days</option>
+                            <option value="30">30 Days</option>
+                            <option value="90">90 Days</option>
+                            <option value="180">180 Days</option>
+                            <option value="365">365 Days</option>
+                        </select>
+                    </div>
+
                     <div className='flex flex-row justify-end items-center w-[100%] mt-6 space-x-8'>
                         <button
                             onClick={() => navigate(-1)}
-                            className='p-2.5 px-10 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-500 transition-all duration-300 text-md font-semibold'
+                            className="p-2.5 px-10 bg-gray-500 text-white rounded-md cursor-pointer hover:bg-gray-400 transition-all duration-300 text-md font-semibold"
                         >
                             Cancel
                         </button>
                         <button
-                            className='p-2 px-10 border-2 border-gray-400 rounded-md cursor-pointer hover:border-green-600 transition-all duration-300 text-md font-semibold'
+                            className="p-2 px-10 border-2 border-red-600 text-red-600 rounded-md cursor-pointer hover:bg-red-600 hover:text-white transition-all duration-300 text-md font-semibold"
                         >
                             Confirm
                         </button>
