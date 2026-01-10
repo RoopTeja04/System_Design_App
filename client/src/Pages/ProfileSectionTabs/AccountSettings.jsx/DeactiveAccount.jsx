@@ -6,6 +6,9 @@ const DeactiveAccount = () => {
 
     const navigate = useNavigate();
 
+    // Deliberate error for testing
+    throw new Error("Simulated Error for Testing");
+
     return (
         <>
             <div className='flex flex-col items-start justify-between gap-6 mr-6'>
