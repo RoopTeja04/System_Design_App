@@ -10,8 +10,8 @@ const EditProfile = () => {
         <>
             <div className='flex items-center justify-between gap-6 mr-6'>
                 <div className='flex items-center gap-2'>
-                    <IoMdArrowBack size={28} onClick={() => { navigate(-1) }} />
-                    <h1 className='text-3xl font-semibold'>Edit Profile</h1>
+                    <IoMdArrowBack size={28} className='cursor-pointer' onClick={() => { navigate(-1) }} />
+                    <h1 className='text-2xl font-semibold'>Edit Profile</h1>
                 </div>
                 <div className='flex items-center gap-4'>
                     <button className='text-lg font-semibold bg-red-600 text-white px-10 py-2 rounded-md tracking-wider hover:bg-red-700 transition-all duration-300'>Cancel</button>
@@ -50,11 +50,25 @@ const EditProfile = () => {
             </div>
 
             <div className='w-[98%] mt-6 mb-8 px-2 flex flex-row justify-between items-center'>
-                <p className='text-lg font-semibold tracking-wide text-blue-600'>Change Password ?</p>
+                <button className='text-lg font-semibold tracking-wide text-blue-600'
+                    onClick={() => navigate("/main/profile/change-password")}
+                >
+                    Change Password ?
+                </button>
 
                 <div className='flex flex-col justify-end items-end space-y-2 mr-2'>
-                    <p className='text-lg font-semibold tracking-wide text-black'>Deactive your Account!</p>
-                    <p className='text-lg font-semibold tracking-wide text-red-600'>Delete your Account</p>
+                    <button
+                        className='text-lg font-semibold tracking-wide text-black'
+                        onClick={() => navigate("/main/profile/deactive-account")}
+                    >
+                        Deactive your Account!
+                    </button>
+                    <button
+                        className='text-lg font-semibold tracking-wide text-red-600'
+                        onClick={() => navigate("/main/profile/delete-account")}
+                    >
+                        Delete your Account
+                    </button>
                 </div>
             </div>
         </>
