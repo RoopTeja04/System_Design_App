@@ -8,6 +8,9 @@ import Search from '../Pages/Search';
 import MainLayout from '../Components/Layout/MainLayout';
 import Profile from '../Components/GlobalComponents/Profile';
 import EditProfile from '../Pages/ProfileSectionTabs/EditProfile';
+import ChangePassword from '../Pages/ProfileSectionTabs/AccountSettings.jsx/ChangePassword';
+import DeactiveAccount from '../Pages/ProfileSectionTabs/AccountSettings.jsx/DeactiveAccount';
+import AccountDeletion from '../Pages/ProfileSectionTabs/AccountSettings.jsx/AccountDeletion';
 
 const Router = createBrowserRouter([
     { path: "/", element: <Login /> },
@@ -22,6 +25,9 @@ const Router = createBrowserRouter([
                 path: "profile", element: <Profile />,
                 children: [
                     { path: "edit-profile", element: <EditProfile /> },
+                    { path: "change-password", element: <ChangePassword /> },
+                    { path: "deactive-account", element: <DeactiveAccount /> },
+                    { path: "delete-account", element: <AccountDeletion /> },
                 ]
             },
         ]
