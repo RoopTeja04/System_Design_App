@@ -1,15 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdArrowBack } from "react-icons/io";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 
 const DeactiveAccount = () => {
 
@@ -39,40 +30,6 @@ const DeactiveAccount = () => {
                         operational reasons. If you’re sure you want to proceed, click
                         the button below to confirm your account deactivation.
                     </p>
-
-                    <div className='w-[60%] mt-4 space-y-4 flex space-x-4'>
-                        <Select>
-                            <SelectTrigger className="w-full h-16 text-md font-semibold border-gray-400 focus:outline-none">
-                                <SelectValue placeholder="Select a Reason" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectGroup>
-                                    <SelectLabel>Reasons</SelectLabel>
-                                    <SelectItem value="temporary">This is temporary. I'll be back.</SelectItem>
-                                    <SelectItem value="privacy">I have a privacy concern.</SelectItem>
-                                    <SelectItem value="usability">I find it difficult to use.</SelectItem>
-                                    <SelectItem value="emails">I get too many emails.</SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-
-                        <Select>
-                            <SelectTrigger className="w-full h-16 text-md font-semibold border-gray-400 focus:outline-none">
-                                <SelectValue placeholder="Select a Duration" />
-                            </SelectTrigger>
-                            <SelectContent className="bg-white">
-                                <SelectGroup>
-                                    <SelectLabel>Reasons</SelectLabel>
-                                    <SelectItem value="7days">1 Week</SelectItem>
-                                    <SelectItem value="1month">1 Month</SelectItem>
-                                    <SelectItem value="3months">3 Months</SelectItem>
-                                    <SelectItem value="6months">6 Months</SelectItem>
-                                    <SelectItem value="1year">1 Year</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </div>
 
                     <div className='flex flex-row justify-end items-center w-[100%] mt-6 space-x-8'>
                         <button
