@@ -29,8 +29,14 @@ const Login = () => {
                 alert(res.data.message);
                 localStorage.setItem("Token", res.data.Token);
                 localStorage.setItem("UserID", res.data.userID);
-                setFormData(DefaultValues);
-                navigate("/main/feed");
+
+                if (!res.data.isDeactived) {
+                    setFormData(DefaultValues);
+                    navigate("/main/feed");
+                }
+                // else {
+
+                // }
             }
         }
         catch (err) {

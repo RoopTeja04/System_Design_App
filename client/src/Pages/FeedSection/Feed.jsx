@@ -32,6 +32,7 @@ const Feed = () => {
 
     const validateUser = React.useCallback(async () => {
         try {
+            if (!getUserID) return;
             const res = await axios.get(`http://localhost:8080/auth/validate-user/${getUserID}`);
             if (res.status === 200)
                 setUserStatus(res.data.FindedUser.name);

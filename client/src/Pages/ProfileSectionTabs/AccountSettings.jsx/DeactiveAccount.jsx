@@ -1,10 +1,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoMdArrowBack } from "react-icons/io";
+import axios from 'axios';
 
 const DeactiveAccount = () => {
 
     const navigate = useNavigate();
+
+    const getUserID = localStorage.getItem("UserID");
+
+    const [reason, setReason] = React.useState("");
+    const [days, setDays] = React.useState("");
+
+    const handleDeactiveBtn = async () => {
+        try {
+            const res = await axios.post("http://localhost:8080/profile-service/profile/deactivate-account",
+                {
+                    reason: reason,
+                    days: days,
+                    userID: getUserID,
+                }
+            )
+            if (res.status === 200) {
+                localStorage.removeItem("UserID");
+                localStorage.removeItem("Token");
+                alert(res.data.message);
+                navigate("/");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
         <>
@@ -35,6 +61,8 @@ const DeactiveAccount = () => {
                         <select
                             className="w-68 px-4 py-2 border border-gray-400 rounded-md focus:cursor-pointer"
                             placeholder="Select a Reason"
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
                         >
                             <option value="">Select a Reason</option>
                             <option value="privacy">I have privacy concerns</option>
@@ -50,6 +78,8 @@ const DeactiveAccount = () => {
                         <select
                             className='w-68 px-4 py-2 border border-gray-400 rounded-md focus:cursor-pointer'
                             placeholder="Select Duration"
+                            value={days}
+                            onChange={(e) => setDays(e.target.value)}
                         >
                             <option value="">Select Duration</option>
                             <option value="1">1 Day</option>
@@ -69,6 +99,7 @@ const DeactiveAccount = () => {
                             Cancel
                         </button>
                         <button
+                            onClick={handleDeactiveBtn}
                             className="p-2 px-10 border-2 border-red-600 text-red-600 rounded-md cursor-pointer hover:bg-red-600 hover:text-white transition-all duration-300 text-md font-semibold"
                         >
                             Confirm

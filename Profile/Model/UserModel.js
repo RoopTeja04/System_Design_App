@@ -23,6 +23,18 @@ const UserSchema = new mongoose.Schema(
             type: String,
             default: '',
         },
+        isDeactived: {
+            type: Boolean,
+            default: false,
+        },
+        deactiveUntill: {
+            type: Date,
+            default: null,
+        },
+        deactivateReason: {
+            type: String,
+            default: null,
+        },
     },
     { timestamps: true }
 );
