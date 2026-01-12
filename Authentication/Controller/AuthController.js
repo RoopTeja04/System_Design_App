@@ -75,6 +75,9 @@ exports.Login = async (req, res) => {
             message: 'Login Successfull',
             Token,
             userID: findEmail._id,
+            isDeactived: findEmail.isDeactived,
+            deactiveUntill: findEmail.deactiveUntill,
+            deactivateReason: findEmail.deactivateReason,
         });
     } catch (err) {
         res.status(500).json({ message: 'Server Down' });

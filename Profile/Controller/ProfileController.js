@@ -143,6 +143,64 @@ exports.removeFollowing = async (req, res) => {
             .status(200)
             .json({ message: 'Following Removed Successfully' });
     } catch (err) {
-        return res.status(500).json({ message: 'Server Down', error });
+        return res.status(500).json({ message: 'Server Down', err });
+    }
+};
+
+exports.DeactivateAccount = async (req, res) => {
+    try {
+        const { reason, days, userID } = req.body;
+
+        const FindUser = await UserModel.findById(userID);
+
+        if (!FindUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const deactivateTill = new Date();
+        deactivateTill.setDate(deactivateTill.getDate() + Number(days));
+
+        FindUser.isDeactived = true;
+        FindUser.deactiveUntill = deactivateTill;
+        FindUser.deactivateReason = reason;
+
+        await FindUser.save();
+
+        res.status(200).json({
+            message: 'Your Account is Deactivated Successfully',
+            deactiveUntill: FindUser.deactiveUntill || deactivateTill,
+        });
+    } catch (err) {
+        return res.status(500).json({ message: 'Server Down', err });
+    }
+};
+
+exports.ReactivateAccount = async (req, res) => {
+    try {
+        const { userID, status } = req.body;
+
+        if (!userID || !status) {
+            return res.status(400).json({ message: 'Invalid Request' });
+        }
+
+        const findUser = await UserModel.findById(userID);
+
+        if (!findUser) {
+            res.status(404).json({ message: 'User Not Found' });
+        }
+
+        if (status) {
+            findUser.isDeactived = false;
+            findUser.deactiveUntill = null;
+            findUser.deactivateReason = null;
+        }
+
+        await findUser.save();
+
+        res.status(200).json({
+            message: 'Your Account is Reactivated Successfully',
+        });
+    } catch (err) {
+        return res.status(500).json({ message: 'Server Down', err });
     }
 };
