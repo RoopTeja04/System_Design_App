@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { FaEyeSlash, FaEye } from "react-icons/fa";
 
 const Login = () => {
 
@@ -12,6 +13,8 @@ const Login = () => {
 
     const [formData, setFormData] = React.useState(DefaultValues);
     const [loading, setLodaing] = React.useState(false);
+
+    const [showPassword, setShowPassword] = React.useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,17 +29,16 @@ const Login = () => {
         try {
             const res = await axios.post("http://localhost:8080/auth/login", { email: formData.email, password: formData.password });
             if (res.status === 200) {
-                alert(res.data.message);
-                localStorage.setItem("Token", res.data.Token);
-                localStorage.setItem("UserID", res.data.userID);
-
                 if (!res.data.isDeactived) {
                     setFormData(DefaultValues);
                     navigate("/main/feed");
+                    localStorage.setItem("Token", res.data.Token);
+                    localStorage.setItem("UserID", res.data.userID);
+                    alert(res.data.message);
                 }
-                // else {
-
-                // }
+                else {
+                    navigate("/reactivate-account", { data: res.data });
+                }
             }
         }
         catch (err) {
@@ -54,28 +56,30 @@ const Login = () => {
             if (Token) {
                 navigate("/main/feed")
             }
+            else {
+                navigate("/")
+            }
         }
         findToken();
     }, [navigate])
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
+        <div className="flex justify-center items-center h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
             <div className="w-full max-w-md">
-                <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10 space-y-8">
+                <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-8 space-y-8">
 
                     <div className="text-center">
                         <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
                         <p className="text-gray-500 text-sm">Enter your credentials to access your account</p>
                     </div>
 
-                    <form className="space-y-6">
+                    <div className="space-y-6">
                         <div className="space-y-2">
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                                 Email Address
                             </label>
                             <input
                                 type="email"
-                                id="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
@@ -92,21 +96,29 @@ const Login = () => {
                                 </label>
                                 <button
                                     onClick={() => navigate("/forgot-password")}
-                                    type="button" className="text-xs text-green-600 hover:text-green-700 font-medium"
+                                    className="text-xs text-right w-full text-green-600 hover:text-green-700 font-medium italic"
                                 >
-                                    Forgot?
+                                    Forgot password?
                                 </button>
                             </div>
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                placeholder="••••••••"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 outline-none"
-                                disabled={loading}
-                            />
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    placeholder={showPassword ? "password" : "••••••••"}
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 outline-none pr-10"
+                                    disabled={loading}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => { setShowPassword(!showPassword) }}
+                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#364153]"
+                                >
+                                    {showPassword ? <FaEyeSlash size={22} /> : <FaEye size={22} />}
+                                </button>
+                            </div>
                         </div>
 
                         <button
@@ -127,7 +139,7 @@ const Login = () => {
                                 'Login'
                             )}
                         </button>
-                    </form>
+                    </div>
 
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
