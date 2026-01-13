@@ -11,13 +11,11 @@ import EditProfile from '../Pages/ProfileSectionTabs/EditProfile';
 import ChangePassword from '../Pages/ProfileSectionTabs/AccountSettings.jsx/ChangePassword';
 import DeactiveAccount from '../Pages/ProfileSectionTabs/AccountSettings.jsx/DeactiveAccount';
 import AccountDeletion from '../Pages/ProfileSectionTabs/AccountSettings.jsx/AccountDeletion';
-import Reactivate from '@/Components/AuthComponents/Reactivate';
 
 const Router = createBrowserRouter([
     { path: "/", element: <Login /> },
     { path: "/create-account", element: <Create /> },
     { path: "/forgot-password", element: <Forgot /> },
-    { path: "/reactivate-account", element: <Reactivate /> },
     {
         path: "/main", element: <MainLayout />,
         children: [

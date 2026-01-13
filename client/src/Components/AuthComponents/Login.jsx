@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
+import Reactivate from './Reactivate';
 
 const Login = () => {
 
@@ -15,6 +16,8 @@ const Login = () => {
     const [loading, setLodaing] = React.useState(false);
 
     const [showPassword, setShowPassword] = React.useState(false);
+    const [showMessage, setShowMessage] = React.useState(false);
+    const [data, setData] = React.useState({});
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,7 +40,8 @@ const Login = () => {
                     alert(res.data.message);
                 }
                 else {
-                    navigate("/reactivate-account", { data: res.data });
+                    setShowMessage(!showMessage);
+                    setData(res.data);
                 }
             }
         }
@@ -64,7 +68,7 @@ const Login = () => {
     }, [navigate])
 
     return (
-        <div className="flex justify-center items-center h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-8 space-y-8">
 
@@ -167,6 +171,14 @@ const Login = () => {
                     © 2025 Your Company. All rights reserved.
                 </p>
             </div>
+
+            {
+                showMessage && (
+                    <Reactivate
+                        data={data}
+                    />
+                )
+            }
         </div>
     )
 }
