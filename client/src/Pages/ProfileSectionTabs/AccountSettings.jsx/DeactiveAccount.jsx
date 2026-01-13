@@ -91,7 +91,7 @@ const DeactiveAccount = () => {
                         </select>
                     </div>
 
-                    <div className='flex flex-row justify-end items-center w-[100%] mt-6 space-x-8'>
+                    <div className='flex flex-row justify-end items-center w-full mt-6 space-x-8'>
                         <button
                             onClick={() => navigate(-1)}
                             className="p-2.5 px-10 bg-gray-500 text-white rounded-md cursor-pointer hover:bg-gray-400 transition-all duration-300 text-md font-semibold"

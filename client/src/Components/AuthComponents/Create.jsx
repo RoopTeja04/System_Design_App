@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FaEyeSlash, FaEye } from "react-icons/fa";
 
 const Create = () => {
 
@@ -10,6 +11,8 @@ const Create = () => {
 
     const [formData, setFormData] = React.useState(DefaultValues);
     const [loading, setLodaing] = React.useState(false);
+
+    const [showPassword, setShowPassword] = React.useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -24,7 +27,7 @@ const Create = () => {
         setLodaing(true)
 
         try {
-            const res = await axios.post("http://localhost:8080/auth/create-account", 
+            const res = await axios.post("http://localhost:8080/auth/create-account",
                 { name: formData.name, email: formData.email, password: formData.password }
             );
             if (res.status === 200) {
@@ -60,7 +63,6 @@ const Create = () => {
                             </label>
                             <input
                                 type="text"
-                                id="name"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
@@ -76,7 +78,6 @@ const Create = () => {
                             </label>
                             <input
                                 type="email"
-                                id="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
@@ -91,15 +92,21 @@ const Create = () => {
                                 Password
                             </label>
                             <input
-                                type="password"
-                                id="password"
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                placeholder="••••••••"
+                                placeholder={showPassword ? "password" : "••••••••"}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 outline-none"
                                 disabled={loading}
                             />
+                            <button
+                                type="button"
+                                onClick={() => { setShowPassword(!showPassword) }}
+                                className="absolute top-[61%] right-[39%] transform -translate-y-1/2 text-[#364153]"
+                            >
+                                {showPassword ? <FaEyeSlash size={22} /> : <FaEye size={22} />}
+                            </button>
                             <p className="text-xs text-gray-500 mt-1">Must be at least 6 characters</p>
                         </div>
 
