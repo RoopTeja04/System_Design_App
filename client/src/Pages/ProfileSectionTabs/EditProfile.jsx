@@ -1,10 +1,60 @@
 import React from 'react';
+import axios from 'axios';
 import { IoMdArrowBack } from "react-icons/io";
 import { useNavigate } from 'react-router-dom';
 
 const EditProfile = () => {
 
     const navigate = useNavigate();
+
+    const [updateData, setUpdateData] = React.useState({
+        name: "",
+        username: "",
+        email: "",
+        bio: ""
+    });
+    const [loading, setLoading] = React.useState(false);
+
+    const getUserID = localStorage.getItem("UserID");
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetching using userID
+                const res = await axios.get(`http://localhost:8080/profile-service/profile/view-profile/${getUserID}`);
+                if (res.status === 200) {
+                    setUpdateData(res.data);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        if (getUserID) {
+            fetchData();
+        }
+    }, [getUserID])
+
+    const handleChange = (e) => {
+        setUpdateData({ ...updateData, [e.target.name]: e.target.value });
+    }
+
+    const handleUpdate = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.put("http://localhost:8080/profile-service/profile/update-account",
+                { ...updateData, userID: getUserID }
+            );
+            if (res.status === 200) {
+                alert(res.data.message);
+                navigate(-1);
+            }
+        } catch (err) {
+            console.log(err);
+            alert("Failed to update profile");
+        } finally {
+            setLoading(false);
+        }
+    }
 
     return (
         <>
@@ -14,8 +64,19 @@ const EditProfile = () => {
                     <h1 className='text-2xl font-semibold'>Edit Profile</h1>
                 </div>
                 <div className='flex items-center gap-4'>
-                    <button className='text-lg font-semibold bg-red-600 text-white px-10 py-2 rounded-md tracking-wider hover:bg-red-700 transition-all duration-300'>Cancel</button>
-                    <button className='border border-gray-400 px-8 py-2 tracking-wider rounded-md cursor-pointer text-lg font-semibold'>Save</button>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className='text-lg font-semibold bg-red-600 text-white px-10 py-2 rounded-md tracking-wider hover:bg-red-700 transition-all duration-300'
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleUpdate}
+                        disabled={loading}
+                        className='border border-gray-400 px-8 py-2 tracking-wider rounded-md cursor-pointer text-lg font-semibold hover:bg-gray-100 transition-all duration-300'
+                    >
+                        {loading ? "Saving..." : "Save"}
+                    </button>
                 </div>
             </div>
 
@@ -24,18 +85,27 @@ const EditProfile = () => {
                     <h1 className='text-[14px] font-semibold ml-2 tracking-wide bg-white relative top-4 max-w-fit px-2'>Profile Name</h1>
                     <input
                         type='text'
+                        name='name'
+                        value={updateData.name || ""}
+                        onChange={handleChange}
                         className='border border-gray-400 p-3 rounded-md w-[40%] text-md font-semibold focus:outline-green-600'
                     />
 
                     <h1 className='text-[14px] font-semibold ml-2 tracking-wide bg-white relative top-4 max-w-fit px-2'>Username</h1>
                     <input
                         type='text'
+                        name='username'
+                        value={updateData.username || ""}
+                        onChange={handleChange}
                         className='border border-gray-400 p-3 rounded-md w-[40%] text-md font-semibold focus:outline-green-600'
                     />
 
                     <h1 className='text-[14px] font-semibold ml-2 tracking-wide bg-white relative top-4 max-w-fit px-2'>Email ID</h1>
                     <input
                         type='text'
+                        name='email'
+                        value={updateData.email || ""}
+                        onChange={handleChange}
                         className='border border-gray-400 p-3 rounded-md w-[40%] text-md font-semibold focus:outline-green-600'
                     />
                 </div>
@@ -44,7 +114,10 @@ const EditProfile = () => {
                     <h1 className='text-[14px] font-semibold ml-2 tracking-wide bg-white relative top-2 max-w-fit px-2'>Bio</h1>
                     <textarea
                         rows={4}
-                        className='border border-gray-400 p-3 rounded-md w-[100%] text-md font-semibold focus:outline-green-600'
+                        name='bio'
+                        value={updateData.bio || ""}
+                        onChange={handleChange}
+                        className='border border-gray-400 p-3 rounded-md w-full text-md font-semibold focus:outline-green-600'
                     />
                 </div>
             </div>
