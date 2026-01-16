@@ -10,6 +10,10 @@ const PostSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        mediaURL: {
+            type: String,
+            default: '',
+        },
         title: {
             type: String,
             required: true,

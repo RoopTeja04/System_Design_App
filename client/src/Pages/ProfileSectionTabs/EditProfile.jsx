@@ -7,12 +7,11 @@ const EditProfile = () => {
 
     const navigate = useNavigate();
 
-    const [updateData, setUpdateData] = React.useState({
-        name: "",
-        username: "",
-        email: "",
-        bio: ""
-    });
+    const [updateData, setUpdateData] = React.useState(
+        {
+            name: "", username: "", email: "", bio: ""
+        }
+    );
     const [loading, setLoading] = React.useState(false);
 
     const getUserID = localStorage.getItem("UserID");
@@ -20,10 +19,9 @@ const EditProfile = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetching using userID
                 const res = await axios.get(`http://localhost:8080/profile-service/profile/view-profile/${getUserID}`);
                 if (res.status === 200) {
-                    setUpdateData(res.data);
+                    setUpdateData(res.data.User);
                 }
             } catch (err) {
                 console.log(err);
@@ -41,6 +39,7 @@ const EditProfile = () => {
     const handleUpdate = async () => {
         setLoading(true);
         try {
+            console.log(updateData);
             const res = await axios.put("http://localhost:8080/profile-service/profile/update-account",
                 { ...updateData, userID: getUserID }
             );
@@ -55,6 +54,8 @@ const EditProfile = () => {
             setLoading(false);
         }
     }
+
+    // console.log(updateData);
 
     return (
         <>

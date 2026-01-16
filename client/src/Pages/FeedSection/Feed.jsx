@@ -20,6 +20,8 @@ const Feed = () => {
         des: "",
         userID: getUserID,
         profileName: "",
+        media: null,
+        mediaURL: "",
     }
 
     const [UserStatus, setUserStatus] = React.useState(null);
@@ -29,6 +31,7 @@ const Feed = () => {
     const [addedLikes, setAddedLikes] = React.useState([]);
     const [DailyFeed, setDailyFeed] = React.useState([]);
     const [activeComment, setActiveComment] = React.useState(null);
+    const [loading, setLoading] = React.useState(false);
 
     const validateUser = React.useCallback(async () => {
         try {
@@ -53,21 +56,30 @@ const Feed = () => {
         try {
             if (!formData.title || !formData.userID) {
                 alert("please fill the details")
+                return;
             }
-            else {
-                if (UserStatus) {
-                    const res = await axios.post("http://localhost:8080/api/feed/upload-post",
-                        {
-                            title: formData.title,
-                            des: formData.des,
-                            userID: formData.userID,
-                            profileName: UserStatus,
-                        }
-                    );
-                    if (res.status === 200) {
-                        alert(res.data.message);
-                        getAllPosts(UserStatus);
+
+            setLoading(true);
+            let uploadedMediaUrl = "";
+
+            if (formData.media) {
+                const cloudRes = await uploadToCloudinary(formData.media);
+                uploadedMediaUrl = cloudRes.secure_url;
+            }
+
+            if (UserStatus) {
+                const res = await axios.post("http://localhost:8080/api/feed/upload-post",
+                    {
+                        title: formData.title,
+                        des: formData.des,
+                        userID: formData.userID,
+                        profileName: UserStatus,
+                        mediaURL: uploadedMediaUrl,
                     }
+                );
+                if (res.status === 200) {
+                    alert(res.data.message);
+                    getAllPosts(UserStatus);
                 }
             }
         } catch (err) {
@@ -76,6 +88,7 @@ const Feed = () => {
         finally {
             setFormData(DefaultValues);
             setVisibleForm(!visibleForm);
+            setLoading(false);
         }
     }
 
@@ -221,6 +234,23 @@ const Feed = () => {
         }
     }
 
+    const uploadToCloudinary = async (file) => {
+        const data = new FormData();
+        data.append("file", file);
+        data.append("upload_preset", "systemdesignApp");
+        data.append("cloud_name", "dqljhvaje");
+
+        const res = await fetch(
+            "https://api.cloudinary.com/v1_1/dqljhvaje/auto/upload",
+            {
+                method: "POST",
+                body: data,
+            }
+        );
+
+        return await res.json();
+    };
+
     return (
         <div className="max-w-3xl mx-auto space-y-6">
             {
@@ -276,6 +306,25 @@ const Feed = () => {
                             <h2 className='text-2xl font-bold text-gray-800 mb-6'>Create New Post</h2>
 
                             <div className='space-y-4'>
+
+                                <div>
+                                    <label className='block text-sm font-medium text-gray-700 mb-2'>
+                                        Upload Photo / Video
+                                    </label>
+
+                                    <input
+                                        type="file"
+                                        accept="image/*,video/*"
+                                        onChange={(e) =>
+                                            setFormData({
+                                                ...formData,
+                                                media: e.target.files[0],
+                                            })
+                                        }
+                                        className="w-full"
+                                    />
+                                </div>
+
                                 <div>
                                     <label className='block text-sm font-medium text-gray-700 mb-2'>
                                         Post Title
@@ -296,7 +345,7 @@ const Feed = () => {
                                     </label>
                                     <textarea
                                         name='des'
-                                        rows='6'
+                                        rows='2'
                                         placeholder='Share your thoughts, ideas, or story...'
                                         value={formData.des}
                                         onChange={handleChange}
@@ -309,7 +358,17 @@ const Feed = () => {
                                         onClick={handleUploadNewPost}
                                         className='flex-1 px-6 py-3 bg-linear-to-r from-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 shadow-lg shadow-purple-500/30'
                                     >
-                                        Publish Post
+                                        {
+                                            loading ?
+                                                <span className="flex items-center justify-center gap-2">
+                                                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    Publishing...
+                                                </span>
+                                                : "Publish"
+                                        }
                                     </button>
                                     <button
                                         onClick={() => { setVisibleForm(false), setFormData(DefaultValues) }}
@@ -352,6 +411,28 @@ const Feed = () => {
                                                 }
                                             </div>
                                         </div>
+
+                                        {post.mediaURL && (
+                                            <div className="mb-4 h-[60vh] w-full overflow-hidden rounded-lg bg-black">
+                                                {post.mediaURL.includes("/video/") ? (
+                                                    <video
+                                                        controls
+                                                        className="h-full w-full object-contain"
+                                                    >
+                                                        <source src={post.mediaURL} />
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                ) : (
+                                                    <img
+                                                        src={post.mediaURL}
+                                                        alt={post.title}
+                                                        className="h-full w-full object-fill"
+                                                    />
+                                                )}
+                                            </div>
+                                        )}
+
+
                                         <div className='mb-4'>
                                             <h2 className='text-xl font-bold text-gray-800 mb-2'>{post.title}</h2>
                                             <p className='text-gray-600 leading-relaxed'>{post.des}</p>
