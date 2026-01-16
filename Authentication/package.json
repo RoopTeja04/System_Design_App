@@ -9,7 +9,7 @@
     "dev:both": "concurrently \"npm run server1\" \"npm run server2\"",
     "start:server1": "node server1.js",
     "start:server2": "node server2.js",
-    "test": "echo \"Tests passed (placeholder)\"",
+    "test": "jest",
     "lint": "eslint \"**/*.js\"",
     "format": "prettier --write \"**/*.js\"",
     "format:check": "prettier --check \"**/*.js\""
@@ -26,6 +26,7 @@
   "devDependencies": {
     "concurrently": "^9.2.1",
     "eslint": "^9.39.2",
+    "jest": "^30.2.0",
     "nodemon": "^2.0.22",
     "prettier": "^3.7.4"
   },

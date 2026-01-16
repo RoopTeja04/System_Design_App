@@ -204,3 +204,26 @@ exports.ReactivateAccount = async (req, res) => {
         return res.status(500).json({ message: 'Server Down', err });
     }
 };
+
+exports.UpdateAccount = async (req, res) => {
+    try {
+        const { userID, name, username, email, bio } = req.body;
+
+        const findUser = await UserModel.findById(userID);
+
+        if (!findUser) {
+            return res.status(404).json({ message: 'User Not Founded!' });
+        }
+
+        findUser.name = name;
+        findUser.username = username;
+        findUser.email = email;
+        findUser.bio = bio;
+
+        await findUser.save();
+
+        res.status(200).json({ message: 'User Updated Successfully!' });
+    } catch (err) {
+        return res.status(500).json({ message: 'Server Down', err });
+    }
+};

@@ -7,6 +7,7 @@ const {
     removeFollowing,
     DeactivateAccount,
     ReactivateAccount,
+    UpdateAccount,
 } = require('../Controller/ProfileController');
 const ProfileRouter = express.Router();
 
@@ -21,6 +22,7 @@ ProfileRouter.post('/deactivate-account', DeactivateAccount);
 
 // Put Routes
 ProfileRouter.put('/reactivate-account', ReactivateAccount);
+ProfileRouter.put('/update-account', UpdateAccount);
 
 // Delete Routes
 ProfileRouter.delete('/remove-following/:id', removeFollowing);
