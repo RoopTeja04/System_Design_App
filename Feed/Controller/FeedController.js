@@ -7,7 +7,7 @@ const FollowModel = require('../Model/Follow');
 
 exports.addPost = async (req, res) => {
     try {
-        const { title, des, userID, profileName } = req.body;
+        const { title, des, userID, profileName, mediaURL } = req.body;
 
         if (!title) {
             return res.status(400).json({ message: 'Post Name is Required' });
@@ -17,6 +17,7 @@ exports.addPost = async (req, res) => {
             des,
             userID,
             profileName,
+            mediaURL,
         });
 
         return res
