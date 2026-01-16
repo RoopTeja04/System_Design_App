@@ -12,7 +12,7 @@ const PostSchema = new mongoose.Schema(
         },
         mediaURL: {
             type: String,
-            default: "",
+            default: '',
         },
         title: {
             type: String,
