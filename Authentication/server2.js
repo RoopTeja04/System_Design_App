@@ -1,9 +1,14 @@
 const express = require('express');
-const ConnectDB = require('./DB_Config/ConfigDB');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const path = require('path');
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
+const ConnectDB = require('../Shared/ConfigDB');
 const cors = require('cors');
 const AuthRouter = require('./Routes/AuthRoutes');
 
-ConnectDB();
+ConnectDB(mongoose);
 
 const app = express();
 

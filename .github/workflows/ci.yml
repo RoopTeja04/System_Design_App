@@ -28,6 +28,10 @@ jobs:
   auth-ci:
     runs-on: ubuntu-latest
 
+    env:
+    MONGO_URL: ${{ secrets.MONGO_URL }}
+    JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,6 +49,10 @@ jobs:
   feed-ci:
     runs-on: ubuntu-latest
 
+    env:
+    MONGO_URL: ${{ secrets.MONGO_URL }}
+    JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -61,6 +69,10 @@ jobs:
 
   profile-ci:
     runs-on: ubuntu-latest
+  
+    env:
+    MONGO_URL: ${{ secrets.MONGO_URL }}
+    JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - uses: actions/checkout@v4
