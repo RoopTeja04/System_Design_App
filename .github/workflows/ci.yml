@@ -29,8 +29,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-    MONGO_URL: ${{ secrets.MONGO_URL }}
-    JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      MONGO_URL: ${{ secrets.MONGO_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - uses: actions/checkout@v4
@@ -50,8 +50,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-    MONGO_URL: ${{ secrets.MONGO_URL }}
-    JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      MONGO_URL: ${{ secrets.MONGO_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - uses: actions/checkout@v4
@@ -71,8 +71,8 @@ jobs:
     runs-on: ubuntu-latest
   
     env:
-    MONGO_URL: ${{ secrets.MONGO_URL }}
-    JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      MONGO_URL: ${{ secrets.MONGO_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
     steps:
       - uses: actions/checkout@v4
