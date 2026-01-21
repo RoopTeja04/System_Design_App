@@ -36,7 +36,6 @@ app.get('/healthz', (req, res) => {
     res.send('Feed Server Health is Fine');
 });
 
-
 app.listen('6001', (req, res) => {
     console.log('Feed Server 6001 is Running');
 });
