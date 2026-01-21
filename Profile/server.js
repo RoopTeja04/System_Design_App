@@ -13,6 +13,7 @@ ConnectDB(mongoose);
 const app = express();
 
 app.set('trust proxy', 1);
+app.set('strict routing', true);
 
 app.use(
     cors({
