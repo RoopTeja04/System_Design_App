@@ -12,7 +12,12 @@ ConnectDB(mongoose);
 
 const app = express();
 
-app.use(cors());
+app.set('trust proxy', 1);
+
+app.use(cors({
+    origin: 'https://system-design-nginx.onrender.com',
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
