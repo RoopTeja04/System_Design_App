@@ -33,9 +33,9 @@ app.use((req, res, next) => {
 });
 
 app.get('/healthz', (req, res) => {
-    res.send('Health is Fine at Second Micro server 6001');
+    res.send('Feed Server Health is Fine');
 });
 
 app.listen('6001', (req, res) => {
-    console.log('Second Micro server 6001 is Running');
+    console.log('Feed Server 6001 is Running');
 });

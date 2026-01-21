@@ -28,9 +28,9 @@ app.use((req, res, next) => {
 });
 
 app.get('/healthz', (req, res) => {
-    res.send('Health is Fine at Server 1');
+    res.send('Profile Server Health is Fine');
 });
 
 app.listen('7001', (req, res) => {
-    console.log('server 7001 is Running');
+    console.log('Profile Server 7001 is Running');
 });
