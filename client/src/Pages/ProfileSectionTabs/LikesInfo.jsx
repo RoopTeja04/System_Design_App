@@ -12,7 +12,7 @@ const LikesInfo = ({ showLikes, setShowLikes, post }) => {
     const fetchLikes = React.useCallback(async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get(`http://localhost:8080/api/feed/likes-data/${post._id}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/feed/likes-data/${post._id}`);
             setData(res.data);
         } catch (err) {
             console.log(err);

@@ -23,7 +23,7 @@ const Forgot = () => {
         setLodaing(true)
 
         try {
-            const res = await axios.post("http://localhost:8080/auth/forgot-password",
+            const res = await axios.post("https://nginx-0yzj.onrender.com/auth/forgot-password",
                 { email: formData.email, newPassword: formData.newPassword, confirmPassword: formData.confirmPassword }
             );
             if (res.status === 200) {

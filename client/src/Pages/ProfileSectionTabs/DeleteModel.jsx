@@ -8,7 +8,7 @@ const DeleteModel = ({ post, visibleDeleteModel, setVisibleDeleteModel }) => {
     const handleDeletePost = async ({ postID }) => {
         setIsDeleting(true);
         try {
-            const res = await axios.delete(`http://localhost:8080/api/feed/delete-post/${postID}`);
+            const res = await axios.delete(`https://nginx-0yzj.onrender.com/feed/delete-post/${postID}`);
             if (res.status === 200) {
                 setVisibleDeleteModel(!visibleDeleteModel)
             }

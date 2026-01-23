@@ -38,7 +38,7 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
 
     const fetchCommentsByPostID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/api/feed/comments/${postID._id}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/feed/comments/${postID._id}`);
             if (res.status === 200) {
                 setComments(res.data.comments);
             }
@@ -55,7 +55,7 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
     const handleUploadComment = async () => {
         try {
             if (!formData.comment.trim()) return;
-            const res = await axios.post("http://localhost:8080/api/feed/add-comment",
+            const res = await axios.post("https://nginx-0yzj.onrender.com/feed/add-comment",
                 {
                     postID: formData.postID,
                     userID: formData.UserID,
@@ -92,7 +92,7 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
 
     const handleDeleteComment = async ({ commentID, userID }) => {
         try {
-            const res = await axios.delete(`http://localhost:8080/api/feed/remove-comment/${commentID}/${userID}`);
+            const res = await axios.delete(`https://nginx-0yzj.onrender.com/feed/remove-comment/${commentID}/${userID}`);
             if (res.status === 200) {
                 setDailyFeed(prev =>
                     prev.map(p =>
@@ -108,7 +108,7 @@ const AddComments = ({ postID, closeComments, setDailyFeed }) => {
 
     const saveEditComment = async () => {
         try {
-            const res = await axios.put(`http://localhost:8080/api/feed/update-comment`, {
+            const res = await axios.put(`https://nginx-0yzj.onrender.com/feed/update-comment`, {
                 commentID: editingCommentId,
                 userID: getUserID,
                 comment: editedComment,

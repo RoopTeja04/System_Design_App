@@ -16,14 +16,14 @@ const app = express();
 /**
  * TRUST PROXY (REQUIRED BEHIND NGINX)
  */
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 /**
  * CORS — allow only gateway
  */
 app.use(
     cors({
-        origin: 'https://nginx-0yzj.onrender.com',
+        origin: 'http://localhost:5173',
         credentials: true,
     })
 );

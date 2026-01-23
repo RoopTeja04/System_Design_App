@@ -27,7 +27,7 @@ const Create = () => {
         setLodaing(true)
 
         try {
-            const res = await axios.post("http://localhost:8080/auth/create-account",
+            const res = await axios.post("https://nginx-0yzj.onrender.com/auth/create-account",
                 { name: formData.name, email: formData.email, password: formData.password }
             );
             if (res.status === 200) {
