@@ -21,12 +21,12 @@ app.set('trust proxy', 1);
 /**
  * CORS — allow only gateway
  */
-// app.use(
-//     cors({
-//         origin: 'http://localhost:5173',
-//         credentials: true,
-//     })
-// );
+app.use(
+    cors({
+        origin: 'http://localhost:5173',
+        credentials: true,
+    })
+);
 
 /**
  * BODY PARSERS
