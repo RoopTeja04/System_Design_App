@@ -19,7 +19,7 @@ const UpdateModel = ({ post, visibleUpdateModel, setVisibleUpdateModel }) => {
     const handleUpdate = async () => {
         setIsUpdating(true);
         try {
-            const res = await axios.put("http://localhost:8080/api/feed/update-post",
+            const res = await axios.put("https://nginx-0yzj.onrender.com/feed/update-post",
                 {
                     title: updateForm.title,
                     des: updateForm.des,

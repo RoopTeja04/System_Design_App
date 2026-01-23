@@ -42,7 +42,7 @@ const Profile = () => {
 
     const fetchUserProfle = React.useCallback(async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-profile/${getUserID}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-profile/${getUserID}`);
             if (res.status === 200) {
                 setProfile(res.data.User);
             }
@@ -53,7 +53,7 @@ const Profile = () => {
 
     const fetchPostsCountbyProfileID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-posts/${getUserID}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-posts/${getUserID}`);
             if (res.status === 200)
                 setPostCount(res.data.Posts.length);
         }
@@ -64,7 +64,7 @@ const Profile = () => {
 
     const fetchFollowingCountByProfileID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-following/${getUserID}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-following/${getUserID}`);
             if (res.status === 200) {
                 setFollowingCount(res.data.Count);
             }
@@ -75,7 +75,7 @@ const Profile = () => {
 
     const fetchFollowersCountByProfileID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-followers/${getUserID}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-followers/${getUserID}`);
             if (res.status === 200) {
                 setFollowersCount(res.data.Count);
             }

@@ -9,7 +9,7 @@ const Following = () => {
 
     const fetchFollowersCountByProfileID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-following/${getUserID}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-following/${getUserID}`);
             if (res.status === 200) {
                 setFollowersData(res.data.following);
             }
@@ -24,7 +24,7 @@ const Following = () => {
 
     const removeFollowing = async (id) => {
         try {
-            const res = await axios.delete(`http://localhost:8080/profile-service/profile/remove-following/${id}`);
+            const res = await axios.delete(`https://nginx-0yzj.onrender.com/profile/remove-following/${id}`);
             if (res.status === 200) {
                 alert(res.data.message);
                 fetchFollowersCountByProfileID();

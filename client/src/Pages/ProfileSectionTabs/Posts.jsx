@@ -34,7 +34,7 @@ const Posts = () => {
 
     const fetchProfile = React.useCallback(async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/profile-service/profile/view-posts/${getUserID}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-posts/${getUserID}`);
             if (res.status === 200)
                 setPostsData(res.data.Posts);
         }
@@ -45,7 +45,7 @@ const Posts = () => {
 
     const validateUser = React.useCallback(async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/auth/validate-user/${getUserID}`);
+            const res = await axios.get(`https://nginx-0yzj.onrender.com/auth/validate-user/${getUserID}`);
             if (res.status === 200)
                 setUserStatus(res.data.FindedUser.name);
         } catch (err) {
@@ -84,7 +84,7 @@ const Posts = () => {
             }
             else {
                 if (UserStatus) {
-                    const res = await axios.post("http://localhost:8080/api/feed/upload-post",
+                    const res = await axios.post("https://nginx-0yzj.onrender.com/feed/upload-post",
                         {
                             title: formData.title,
                             des: formData.des,
