@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
-const cors = require('cors');
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -19,17 +18,8 @@ const app = express();
 app.set('trust proxy', true);
 
 /**
- * CORS — allow only gateway
- */
-app.use(
-    cors({
-        origin: 'https://nginx-0yzj.onrender.com',
-        credentials: true,
-    })
-);
-
-/**
  * BODY PARSERS
+ * Note: CORS is handled by NGINX gateway, not here
  */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
