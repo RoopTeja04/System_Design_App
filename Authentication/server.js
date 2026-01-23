@@ -12,48 +12,22 @@ ConnectDB(mongoose);
 
 const app = express();
 
-/**
- * TRUST PROXY (REQUIRED BEHIND NGINX)
- */
 app.set('trust proxy', 1);
 
-/**
- * BODY PARSERS
- * Note: CORS is handled by NGINX gateway, not here
- */
+// NO CORS HERE (Handled by NGINX)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/**
- * HEALTH CHECK (NO REDIRECTS)
- */
 app.get('/healthz', (req, res) => {
-    return res.status(200).send('Auth Server Health is Fine');
+    res.status(200).send('Auth Server Health is Fine');
 });
 
-/**
- * ROOT — DO NOT REDIRECT
- */
 app.get('/', (req, res) => {
-    return res.status(200).send('Auth Server 5001 is Running');
+    res.status(200).send('Auth Server 5001 is Running');
 });
 
-/**
- * ROUTES
- */
 app.use('/auth', AuthRouter);
 
-/**
- * DEBUG HEADER
- */
-app.use((req, res, next) => {
-    res.setHeader('X-Server-Port', '5001');
-    next();
-});
-
-/**
- * 404 HANDLER (IMPORTANT)
- */
 app.use((req, res) => {
     res.status(404).json({
         error: 'Route not found',
@@ -61,9 +35,6 @@ app.use((req, res) => {
     });
 });
 
-/**
- * START SERVER
- */
 app.listen(5001, () => {
     console.log('Auth Server running on port 5001');
 });
