@@ -30,7 +30,7 @@ const Login = () => {
         }
         setLodaing(true);
         try {
-            const res = await axios.post("https://nginx-0yzj.onrender.com/auth/login", { email: formData.email, password: formData.password }, { withCredentials: true });
+            const res = await axios.post("https://nginx-0yzj.onrender.com/auth/login", { email: formData.email, password: formData.password });
             if (res.status === 200) {
                 if (!res.data.isDeactived) {
                     setFormData(DefaultValues);
