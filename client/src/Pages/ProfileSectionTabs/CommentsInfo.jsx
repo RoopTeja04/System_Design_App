@@ -10,7 +10,7 @@ const CommentsInfo = ({ showComments, setShowComments, post }) => {
 
     const fetchComments = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/feed/comments/${post._id}`);
+            const res = await axios.get(`http://localhost:6001/feed/comments/${post._id}`);
             setData(res.data);
         } catch (err) {
             console.log(err);

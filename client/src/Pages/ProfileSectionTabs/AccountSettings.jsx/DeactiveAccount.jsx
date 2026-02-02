@@ -14,7 +14,7 @@ const DeactiveAccount = () => {
 
     const handleDeactiveBtn = async () => {
         try {
-            const res = await axios.post("https://nginx-0yzj.onrender.com/profile/deactivate-account",
+            const res = await axios.post("http://localhost:7001/profile/deactivate-account",
                 {
                     reason: reason,
                     days: days,

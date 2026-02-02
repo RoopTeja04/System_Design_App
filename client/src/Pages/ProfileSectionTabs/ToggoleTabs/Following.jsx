@@ -24,7 +24,7 @@ const Following = () => {
 
     const removeFollowing = async (id) => {
         try {
-            const res = await axios.delete(`https://nginx-0yzj.onrender.com/profile/remove-following/${id}`);
+            const res = await axios.delete(`http://localhost:7001/profile/remove-following/${id}`);
             if (res.status === 200) {
                 alert(res.data.message);
                 fetchFollowersCountByProfileID();

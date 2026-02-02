@@ -10,7 +10,7 @@ const Followers = () => {
 
     const fetchFollowersCountByProfileID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-followers/${getUserID}`);
+            const res = await axios.get(`http://localhost:7001/profile/view-followers/${getUserID}`);
             if (res.status === 200) {
                 setFollowersData(res.data.followers);
             }

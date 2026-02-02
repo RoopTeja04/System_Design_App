@@ -40,7 +40,7 @@ const EditProfile = () => {
         setLoading(true);
         try {
             console.log(updateData);
-            const res = await axios.put("https://nginx-0yzj.onrender.com/profile/update-account",
+            const res = await axios.put("http://localhost:7001/profile/update-account",
                 { ...updateData, userID: getUserID }
             );
             if (res.status === 200) {

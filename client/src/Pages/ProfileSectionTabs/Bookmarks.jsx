@@ -34,7 +34,7 @@ const Bookmarks = () => {
 
     const handleDeleteBookmark = async ({ bookmarkID }) => {
         try {
-            const res = await axios.delete(`https://nginx-0yzj.onrender.com/feed/delete-bookmark?userID=${userID}&postID=${bookmarkID}`);
+            const res = await axios.delete(`http://localhost:6001/feed/delete-bookmark?userID=${userID}&postID=${bookmarkID}`);
             if (res.status === 200) {
                 alert(res.data.message)
                 fetchBookmarks();
