@@ -48,6 +48,7 @@ const Feed = () => {
         validateUser();
     }, [validateUser]);
 
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
@@ -67,20 +68,18 @@ const Feed = () => {
                 uploadedMediaUrl = cloudRes.secure_url;
             }
 
-            if (UserStatus) {
-                const res = await axios.post("http://localhost:6001/feed/upload-post",
-                    {
-                        title: formData.title,
-                        des: formData.des,
-                        userID: formData.userID,
-                        profileName: UserStatus,
-                        mediaURL: uploadedMediaUrl,
-                    }
-                );
-                if (res.status === 200) {
-                    alert(res.data.message);
-                    getAllPosts(UserStatus);
+            const res = await axios.post("http://localhost:6001/feed/upload-post",
+                {
+                    title: formData.title,
+                    des: formData.des,
+                    userID: formData.userID,
+                    profileName: UserStatus,
+                    mediaURL: uploadedMediaUrl,
                 }
+            );
+            if (res.status === 200) {
+                alert(res.data.message);
+                getAllPosts();
             }
         } catch (err) {
             console.log(err)
@@ -92,27 +91,34 @@ const Feed = () => {
         }
     }
 
-    const getAllPosts = React.useCallback(async (UserStatus) => {
+    const getAllPosts = React.useCallback(async () => {
         try {
-            if (UserStatus) {
-                const res = await axios.get("http://localhost:6001/feed/all-posts");
+            let res;
+            if (getUserID) {
+                res = await axios.get(`http://localhost:6001/feed/user-feed/${getUserID}`);
                 if (res.status === 200) {
-                    setDailyFeed(res.data.allPosts);
+                    setDailyFeed(res.data.feedPost);
+                    return;
                 }
+            }
+
+            const allRes = await axios.get("http://localhost:6001/feed/all-posts");
+            if (allRes.status === 200) {
+                setDailyFeed(allRes.data.allPosts);
             }
         }
         catch (err) {
             console.log(err)
         }
-    }, []);
+    }, [getUserID]);
 
     React.useEffect(() => {
-        getAllPosts(UserStatus);
-    }, [UserStatus, getAllPosts]);
+        getAllPosts();
+    }, [getAllPosts]);
 
     const handleAddBookmark = async ({ postID }) => {
         try {
-            if (UserStatus) {
+            if (getUserID) {
                 if (addedBookmarks.some(b => b.postID === postID)) {
                     //Delete Bookmark
                     const res = await axios.delete(`http://localhost:6001/feed/delete-bookmark?userID=${getUserID}&postID=${postID}`);
@@ -173,7 +179,7 @@ const Feed = () => {
 
     const handleLikeFunction = async ({ postID }) => {
         try {
-            if (UserStatus) {
+            if (getUserID) {
 
                 const isLiked = addedLikes.some(l => l.postID === postID);
 
@@ -228,6 +234,7 @@ const Feed = () => {
 
             if (res.status === 200) {
                 alert(res.data.message);
+                getAllPosts();
             }
         } catch (err) {
             console.log(err)

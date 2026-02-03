@@ -89,15 +89,12 @@ exports.forgotPassword = async (req, res) => {
         const { email, newPassword, confirmPassword } = req.body;
 
         if (newPassword !== confirmPassword) {
-            return res
-                .status(401)
-                .json({
-                    error:
-                    {
-                        code: "PASSWORD_MISMATCH",
-                        message: "Password Not matched. Check once",
-                    }
-                });
+            return res.status(401).json({
+                error: {
+                    code: 'PASSWORD_MISMATCH',
+                    message: 'Password Not matched. Check once',
+                },
+            });
         }
 
         const findEmail = await UserModel.findOne({ email });

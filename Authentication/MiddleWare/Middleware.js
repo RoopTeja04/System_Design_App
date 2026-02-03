@@ -1,18 +1,17 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 const { createClient } = require('redis');
 
 exports.verifyToken = (req, res, next) => {
-
     const Token = req.headers['authorization'];
 
     if (!Token) {
         return res.status(401).json({
             error: {
-                code: "Unauthorized",
-                message: "Token Not Found"
-            }
-        })
+                code: 'Unauthorized',
+                message: 'Token Not Found',
+            },
+        });
     }
 
     try {
@@ -21,16 +20,15 @@ exports.verifyToken = (req, res, next) => {
         if (req.user) {
             next();
         }
-    }
-    catch (err) {
+    } catch (err) {
         return res.status(500).json({
             error: {
-                code: "Internal Server Error",
-                message: "Token Verification Failed"
-            }
-        })
+                code: 'Internal Server Error',
+                message: 'Token Verification Failed',
+            },
+        });
     }
-}
+};
 
 const createRedisClient = createClient({
     username: process.env.Redis_Username,
@@ -48,10 +46,9 @@ createRedisClient
     })
     .catch((err) => {
         console.log('Redis Connection Failed', err);
-    })
+    });
 
 exports.RateLimit = async (req, res, next) => {
-
     const UserID = req.ip;
 
     const key = `rate limit: ${UserID}`;
@@ -65,11 +62,11 @@ exports.RateLimit = async (req, res, next) => {
     if (count > 10) {
         return res.status(429).json({
             code: {
-                error: "Too Many Requests",
-                message: "Please Try Again After Some Time"
-            }
-        })
+                error: 'Too Many Requests',
+                message: 'Please Try Again After Some Time',
+            },
+        });
     }
 
     next();
-}
+};

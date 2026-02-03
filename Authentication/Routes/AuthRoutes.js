@@ -6,7 +6,7 @@ const {
     ValidateUserperRequest,
 } = require('../Controller/AuthController');
 
-const { verifyToken, RateLimit } = require("../MiddleWare/Middleware");
+const { verifyToken, RateLimit } = require('../MiddleWare/Middleware');
 const AuthRouter = express.Router();
 
 AuthRouter.post('/create-account', RateLimit, CreateAccount);

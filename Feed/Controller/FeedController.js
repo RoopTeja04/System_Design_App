@@ -369,3 +369,35 @@ exports.AddFollow = async (req, res) => {
         return res.status(500).json({ message: 'Server Down', error });
     }
 };
+
+exports.getPostsByFollowing = async (req, res) => {
+    try {
+        const { userID } = req.params;
+
+        const FollowingList = await FollowModel.find({
+            followerID: userID,
+        })
+            .select('followingID')
+            .lean();
+
+        const followingIDs = FollowingList.map((f) => f.followingID);
+
+        if (followingIDs.length === 0) {
+            return res.status(200).json({
+                message: 'No following users',
+                feedPost: [],
+            });
+        }
+
+        const feedPost = await PostModel.find({
+            userID: { $in: followingIDs },
+        }).sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            message: 'Your Feed',
+            feedPost,
+        });
+    } catch (error) {
+        return res.status(500).json({ message: 'Server Down', error });
+    }
+};
