@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
+const cors = require('cors');
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
@@ -12,9 +13,7 @@ ConnectDB(mongoose);
 
 const app = express();
 
-app.set('trust proxy', 1);
-
-// NO CORS HERE (Handled by NGINX)
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,13 +26,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth', AuthRouter);
-
-app.use((req, res) => {
-    res.status(404).json({
-        error: 'Route not found',
-        path: req.originalUrl,
-    });
-});
 
 app.listen(5001, () => {
     console.log('Auth Server running on port 5001');

@@ -4,11 +4,11 @@ const PostModel = require('../Model/post');
 const FollowModel = require('../Model/Follow');
 
 const createRedisClient = createClient({
-    username: 'default',
-    password: '5gtcIw9hetS1cLftYhvUufpCClkeZzZk',
+    username: process.env.Redis_Username,
+    password: process.env.Redis_Password,
     socket: {
-        host: 'redis-17092.c8.us-east-1-2.ec2.cloud.redislabs.com',
-        port: 17092,
+        host: process.env.Redis_Host,
+        port: process.env.Redis_Port,
     },
 });
 

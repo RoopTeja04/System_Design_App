@@ -42,7 +42,7 @@ const Profile = () => {
 
     const fetchUserProfle = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-profile/${getUserID}`);
+            const res = await axios.get(`http://localhost:7001/profile/view-profile/${getUserID}`);
             if (res.status === 200) {
                 setProfile(res.data.User);
             }
@@ -53,7 +53,7 @@ const Profile = () => {
 
     const fetchPostsCountbyProfileID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-posts/${getUserID}`);
+            const res = await axios.get(`http://localhost:7001/profile/view-posts/${getUserID}`);
             if (res.status === 200)
                 setPostCount(res.data.Posts.length);
         }
@@ -64,7 +64,7 @@ const Profile = () => {
 
     const fetchFollowingCountByProfileID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-following/${getUserID}`);
+            const res = await axios.get(`http://localhost:7001/profile/view-following/${getUserID}`);
             if (res.status === 200) {
                 setFollowingCount(res.data.Count);
             }
@@ -75,7 +75,7 @@ const Profile = () => {
 
     const fetchFollowersCountByProfileID = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-followers/${getUserID}`);
+            const res = await axios.get(`http://localhost:7001/profile/view-followers/${getUserID}`);
             if (res.status === 200) {
                 setFollowersCount(res.data.Count);
             }
@@ -116,7 +116,10 @@ const Profile = () => {
 
                                     <div className="flex-1 w-full text-center md:text-left">
                                         <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                                            <h1 className="text-2xl font-semibold text-gray-800">{profile.name || 'User Name'}</h1>
+                                            <div className='flex flex-col space-y-1 items-center'>
+                                                <h1 className="text-2xl font-semibold text-gray-800">{profile.username || ""}</h1>
+                                                <h1 className="text-md text-gray-800">{profile.name}</h1>
+                                            </div>
                                             <button
                                                 className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-all duration-200 font-medium flex items-center justify-center gap-2 mx-auto md:mx-0"
                                                 onClick={() => navigate("/main/profile/edit-profile")}

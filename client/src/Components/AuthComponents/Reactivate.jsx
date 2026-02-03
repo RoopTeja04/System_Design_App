@@ -13,7 +13,7 @@ const Reactivate = ({ data }) => {
         setLoading(true);
 
         try {
-            const res = await axios.put("https://nginx-0yzj.onrender.com/profile/reactivate-account",
+            const res = await axios.put("http://localhost:7001/profile/reactivate-account",
                 { userID: data.userID, status: status || true }
             )
 

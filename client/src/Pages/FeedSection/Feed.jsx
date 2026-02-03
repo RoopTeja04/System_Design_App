@@ -36,7 +36,7 @@ const Feed = () => {
     const validateUser = React.useCallback(async () => {
         try {
             if (!getUserID) return;
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/auth/validate-user/${getUserID}`);
+            const res = await axios.get(`http://localhost:5001/auth/validate-user/${getUserID}`);
             if (res.status === 200)
                 setUserStatus(res.data.FindedUser.name);
         } catch (err) {
@@ -47,6 +47,7 @@ const Feed = () => {
     React.useEffect(() => {
         validateUser();
     }, [validateUser]);
+
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -67,20 +68,18 @@ const Feed = () => {
                 uploadedMediaUrl = cloudRes.secure_url;
             }
 
-            if (UserStatus) {
-                const res = await axios.post("https://nginx-0yzj.onrender.com/feed/upload-post",
-                    {
-                        title: formData.title,
-                        des: formData.des,
-                        userID: formData.userID,
-                        profileName: UserStatus,
-                        mediaURL: uploadedMediaUrl,
-                    }
-                );
-                if (res.status === 200) {
-                    alert(res.data.message);
-                    getAllPosts(UserStatus);
+            const res = await axios.post("http://localhost:6001/feed/upload-post",
+                {
+                    title: formData.title,
+                    des: formData.des,
+                    userID: formData.userID,
+                    profileName: UserStatus,
+                    mediaURL: uploadedMediaUrl,
                 }
+            );
+            if (res.status === 200) {
+                alert(res.data.message);
+                getAllPosts();
             }
         } catch (err) {
             console.log(err)
@@ -92,30 +91,37 @@ const Feed = () => {
         }
     }
 
-    const getAllPosts = React.useCallback(async (UserStatus) => {
+    const getAllPosts = React.useCallback(async () => {
         try {
-            if (UserStatus) {
-                const res = await axios.get("https://nginx-0yzj.onrender.com/feed/all-posts");
+            let res;
+            if (getUserID) {
+                res = await axios.get(`http://localhost:6001/feed/user-feed/${getUserID}`);
                 if (res.status === 200) {
-                    setDailyFeed(res.data.allPosts);
+                    setDailyFeed(res.data.feedPost);
+                    return;
                 }
+            }
+
+            const allRes = await axios.get("http://localhost:6001/feed/all-posts");
+            if (allRes.status === 200) {
+                setDailyFeed(allRes.data.allPosts);
             }
         }
         catch (err) {
             console.log(err)
         }
-    }, []);
+    }, [getUserID]);
 
     React.useEffect(() => {
-        getAllPosts(UserStatus);
-    }, [UserStatus, getAllPosts]);
+        getAllPosts();
+    }, [getAllPosts]);
 
     const handleAddBookmark = async ({ postID }) => {
         try {
-            if (UserStatus) {
+            if (getUserID) {
                 if (addedBookmarks.some(b => b.postID === postID)) {
                     //Delete Bookmark
-                    const res = await axios.delete(`https://nginx-0yzj.onrender.com/feed/delete-bookmark?userID=${getUserID}&postID=${postID}`);
+                    const res = await axios.delete(`http://localhost:6001/feed/delete-bookmark?userID=${getUserID}&postID=${postID}`);
 
                     if (res.status === 200) {
                         alert(res.data.message);
@@ -124,7 +130,7 @@ const Feed = () => {
                 }
                 else {
                     // add to Bookmark
-                    const res = await axios.post("https://nginx-0yzj.onrender.com/feed/add-bookmarks",
+                    const res = await axios.post("http://localhost:6001/feed/add-bookmarks",
                         {
                             userID: getUserID,
                             postID: postID
@@ -143,7 +149,7 @@ const Feed = () => {
 
     const fetchAddedBookmarks = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/feed/user-bookmarks/${getUserID}`);
+            const res = await axios.get(`http://localhost:6001/feed/user-bookmarks/${getUserID}`);
             if (res.status === 200) {
                 setAddedBookmarks(res.data.bookmarks);
             }
@@ -158,7 +164,7 @@ const Feed = () => {
 
     const fetchAddedLikes = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/feed/user-likes/${getUserID}`);
+            const res = await axios.get(`http://localhost:6001/feed/user-likes/${getUserID}`);
             if (res.status === 200) {
                 setAddedLikes(res.data.likes);
             }
@@ -173,7 +179,7 @@ const Feed = () => {
 
     const handleLikeFunction = async ({ postID }) => {
         try {
-            if (UserStatus) {
+            if (getUserID) {
 
                 const isLiked = addedLikes.some(l => l.postID === postID);
 
@@ -192,7 +198,7 @@ const Feed = () => {
                 setAddedLikes(prev => isLiked ? prev.filter(l => l.postID !== postID) : [...prev, { postID }]);
                 if (isLiked) {
                     //Remove Like
-                    const res = await axios.delete("https://nginx-0yzj.onrender.com/feed/remove-like", {
+                    const res = await axios.delete("http://localhost:6001/feed/remove-like", {
                         data: {
                             userID: getUserID,
                             postID: postID,
@@ -204,7 +210,7 @@ const Feed = () => {
                 }
                 else {
                     // ADD Like
-                    const res = await axios.post("https://nginx-0yzj.onrender.com/feed/add-like", {
+                    const res = await axios.post("http://localhost:6001/feed/add-like", {
                         userID: getUserID,
                         postID: postID
                     });
@@ -220,7 +226,7 @@ const Feed = () => {
 
     const handleFollowButton = async ({ UserID, userName }) => {
         try {
-            const res = await axios.post("https://nginx-0yzj.onrender.com/feed/add-follow", {
+            const res = await axios.post("http://localhost:6001/feed/add-follow", {
                 followerID: getUserID,
                 followingID: UserID,
                 userName: userName,
@@ -228,6 +234,7 @@ const Feed = () => {
 
             if (res.status === 200) {
                 alert(res.data.message);
+                getAllPosts();
             }
         } catch (err) {
             console.log(err)

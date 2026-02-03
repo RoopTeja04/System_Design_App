@@ -2,7 +2,7 @@ const UserModel = require('../Model/UserModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'MY_SUPER_SECRET_KEY';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.CreateAccount = async (req, res) => {
     const { name, email, password } = req.body;
@@ -89,9 +89,12 @@ exports.forgotPassword = async (req, res) => {
         const { email, newPassword, confirmPassword } = req.body;
 
         if (newPassword !== confirmPassword) {
-            return res
-                .status(401)
-                .json({ message: 'Password Not matched. Check once' });
+            return res.status(401).json({
+                error: {
+                    code: 'PASSWORD_MISMATCH',
+                    message: 'Password Not matched. Check once',
+                },
+            });
         }
 
         const findEmail = await UserModel.findOne({ email });
@@ -123,7 +126,7 @@ exports.ValidateUserperRequest = async (req, res) => {
             return res.status(404).json({ message: 'User Not Validated' });
         }
 
-        return res.status(200).json({ message: 'Good To Go', FindedUser });
+        return res.status(200).json({ message: 'Profile Founded', FindedUser });
     } catch (err) {
         res.status(500).json({ message: 'Server Down' });
     }
