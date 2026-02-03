@@ -19,7 +19,7 @@ const Bookmarks = () => {
 
     const fetchBookmarks = React.useCallback(async () => {
         try {
-            const res = await axios.get(`https://nginx-0yzj.onrender.com/feed/user-bookmarks-by-user/${userID}`);
+            const res = await axios.get(`http://localhost:6001/feed/user-bookmarks-by-user/${userID}`);
             if (res.status === 200) {
                 setBookmarksData(res.data.bookmarks);
             }

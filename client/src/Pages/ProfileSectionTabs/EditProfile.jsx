@@ -19,7 +19,7 @@ const EditProfile = () => {
     React.useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`https://nginx-0yzj.onrender.com/profile/view-profile/${getUserID}`);
+                const res = await axios.get(`http://localhost:7001/profile/view-profile/${getUserID}`);
                 if (res.status === 200) {
                     setUpdateData(res.data.User);
                 }
