@@ -5,28 +5,34 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.CreateAccount = async (req, res) => {
-    const { name, email, password } = req.body;
+    const data = req.body;
+
+    if (!data.email || !data.password || !data.name) {
+        return res.status(400).json({
+            message: 'Fill all the fields to create account',
+        });
+    }
 
     try {
-        const findUser = await UserModel.findOne({ email });
+        const findUser = await UserModel.findOne({ email: data.email });
 
         if (findUser)
-            return res.status(401).json({
+            return res.status(409).json({
                 message: 'Already Registered',
             });
 
-        const hashpasword = await bcrypt.hash(password, 10);
+        const hashpasword = await bcrypt.hash(data.password, 10);
 
         const createdAccount = await UserModel.create({
-            name,
-            email,
+            name: data.name,
+            email: data.email,
             password: hashpasword,
         });
 
         const Token = jwt.sign(
             {
                 user_Id: createdAccount._id,
-                email_id: email.email,
+                email_id: createdAccount.email,
             },
             JWT_SECRET,
             { expiresIn: '1h' }

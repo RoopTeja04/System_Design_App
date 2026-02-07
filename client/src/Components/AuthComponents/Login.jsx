@@ -1,15 +1,14 @@
-import React from 'react'
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
-import { FaEyeSlash, FaEye } from "react-icons/fa";
+import axios from 'axios';
+import { FaEyeSlash, FaEye } from 'react-icons/fa';
 import Reactivate from './Reactivate';
 
 const Login = () => {
-
     const DefaultValues = {
-        email: "",
-        password: "",
-    }
+        email: '',
+        password: '',
+    };
     const navigate = useNavigate();
 
     const [formData, setFormData] = React.useState(DefaultValues);
@@ -21,65 +20,70 @@ const Login = () => {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-    }
+    };
 
     const handleSubmit = async () => {
         if (!formData.email && !formData.password) {
-            alert("Fields Required to fill");
+            alert('Fields Required to fill');
             return;
         }
         setLodaing(true);
         try {
-            const res = await axios.post("http://localhost:5001/auth/login", { email: formData.email, password: formData.password });
+            const res = await axios.post('http://localhost:5001/auth/login', {
+                email: formData.email,
+                password: formData.password,
+            });
             if (res.status === 200) {
                 if (!res.data.isDeactived) {
                     setFormData(DefaultValues);
-                    navigate("/main/feed");
-                    localStorage.setItem("Token", res.data.Token);
-                    localStorage.setItem("UserID", res.data.userID);
+                    navigate('/main');
+                    localStorage.setItem('Token', res.data.Token);
+                    localStorage.setItem('UserID', res.data.userID);
                     alert(res.data.message);
-                }
-                else {
+                } else {
                     setShowMessage(!showMessage);
                     setData(res.data);
                 }
             }
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
-        }
-        finally {
+        } finally {
             setLodaing(false);
             setFormData(DefaultValues);
         }
-    }
+    };
 
     React.useEffect(() => {
         const findToken = () => {
-            const Token = localStorage.getItem("Token");
+            const Token = localStorage.getItem('Token');
             if (Token) {
-                navigate("/main/feed")
+                navigate('/main');
+            } else {
+                navigate('/');
             }
-            else {
-                navigate("/")
-            }
-        }
+        };
         findToken();
-    }, [navigate])
+    }, [navigate]);
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-8 space-y-8">
-
                     <div className="text-center">
-                        <h2 className="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-                        <p className="text-gray-500 text-sm">Enter your credentials to access your account</p>
+                        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                            Welcome Back
+                        </h2>
+                        <p className="text-gray-500 text-sm">
+                            Enter your credentials to access your account
+                        </p>
                     </div>
 
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            <label
+                                htmlFor="email"
+                                className="block text-sm font-medium text-gray-700"
+                            >
                                 Email Address
                             </label>
                             <input
@@ -95,11 +99,14 @@ const Login = () => {
 
                         <div className="space-y-2">
                             <div className="flex justify-between items-center">
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                <label
+                                    htmlFor="password"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
                                     Password
                                 </label>
                                 <button
-                                    onClick={() => navigate("/forgot-password")}
+                                    onClick={() => navigate('/forgot-password')}
                                     className="text-xs text-right w-full text-green-600 hover:text-green-700 font-medium italic"
                                 >
                                     Forgot password?
@@ -107,20 +114,28 @@ const Login = () => {
                             </div>
                             <div className="relative">
                                 <input
-                                    type={showPassword ? "text" : "password"}
+                                    type={showPassword ? 'text' : 'password'}
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    placeholder={showPassword ? "password" : "••••••••"}
+                                    placeholder={
+                                        showPassword ? 'password' : '••••••••'
+                                    }
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 outline-none pr-10"
                                     disabled={loading}
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => { setShowPassword(!showPassword) }}
+                                    onClick={() => {
+                                        setShowPassword(!showPassword);
+                                    }}
                                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#364153]"
                                 >
-                                    {showPassword ? <FaEyeSlash size={22} /> : <FaEye size={22} />}
+                                    {showPassword ? (
+                                        <FaEyeSlash size={22} />
+                                    ) : (
+                                        <FaEye size={22} />
+                                    )}
                                 </button>
                             </div>
                         </div>
@@ -133,9 +148,25 @@ const Login = () => {
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
-                                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    <svg
+                                        className="animate-spin h-5 w-5"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <circle
+                                            className="opacity-25"
+                                            cx="12"
+                                            cy="12"
+                                            r="10"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                        ></circle>
+                                        <path
+                                            className="opacity-75"
+                                            fill="currentColor"
+                                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                        ></path>
                                     </svg>
                                     Logging in...
                                 </span>
@@ -150,7 +181,9 @@ const Login = () => {
                             <div className="w-full border-t border-gray-300"></div>
                         </div>
                         <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">or</span>
+                            <span className="px-2 bg-white text-gray-500">
+                                or
+                            </span>
                         </div>
                     </div>
 
@@ -158,7 +191,7 @@ const Login = () => {
                         <p className="text-gray-600 text-sm">
                             New User?{' '}
                             <span
-                                onClick={() => navigate("/create-account")}
+                                onClick={() => navigate('/create-account')}
                                 className="text-green-600 hover:text-green-700 font-semibold cursor-pointer hover:underline"
                             >
                                 Create an account
@@ -172,15 +205,9 @@ const Login = () => {
                 </p>
             </div>
 
-            {
-                showMessage && (
-                    <Reactivate
-                        data={data}
-                    />
-                )
-            }
+            {showMessage && <Reactivate data={data} />}
         </div>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
