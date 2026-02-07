@@ -2,75 +2,110 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
-import Reactivate from './Reactivate';
+import { useAuthStore } from '../../Pages/Stores/AuthStores';
 
 const Login = () => {
+    const { login, setError, setSuccess, success, error } = useAuthStore();
+
     const DefaultValues = {
         email: '',
         password: '',
     };
+
     const navigate = useNavigate();
 
     const [formData, setFormData] = React.useState(DefaultValues);
-    const [loading, setLodaing] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const [showPassword, setShowPassword] = React.useState(false);
-    const [showMessage, setShowMessage] = React.useState(false);
-    const [data, setData] = React.useState({});
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async () => {
-        if (!formData.email && !formData.password) {
-            alert('Fields Required to fill');
-            return;
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regexPassword =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    const isValidForm = () => {
+        const { email, password } = formData;
+        if (!email.trim() || !password.trim()) {
+            setError('All fields are required');
+            setTimeout(() => {
+                setError('');
+            }, 6000);
+            return false;
         }
-        setLodaing(true);
+        if (
+            !email.includes('@') ||
+            !email.includes('.') ||
+            !regexEmail.test(email)
+        ) {
+            setError('Email must be valid and contain @ and .');
+            setTimeout(() => {
+                setError(null);
+            }, 6000);
+            return false;
+        }
+
+        if (password.length < 8) {
+            setError('Password must be at least 8 characters long');
+            setTimeout(() => {
+                setError(null);
+            }, 6000);
+            return false;
+        }
+
+        if (!regexPassword.test(password)) {
+            setError(
+                'Password must contain one uppercase, one lowercase, one number and one special character'
+            );
+            setTimeout(() => {
+                setError(null);
+            }, 6000);
+            return false;
+        }
+
+        return true;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!isValidForm()) return;
+
+        setLoading(true);
         try {
-            const res = await axios.post('http://localhost:5001/auth/login', {
-                email: formData.email,
-                password: formData.password,
-            });
-            if (res.status === 200) {
-                if (!res.data.isDeactived) {
-                    setFormData(DefaultValues);
-                    navigate('/main');
-                    localStorage.setItem('Token', res.data.Token);
-                    localStorage.setItem('UserID', res.data.userID);
-                    alert(res.data.message);
+            const UpdatedData = {
+                email: formData.email.trim(),
+                password: formData.password.trim(),
+            };
+
+            const data = await login(UpdatedData);
+            if (data) {
+                if (data.isDeactived) {
+                    navigate('/reactivate-account');
                 } else {
-                    setShowMessage(!showMessage);
-                    setData(res.data);
+                    navigate('/main');
                 }
+                setSuccess(null);
+                setError(null);
             }
         } catch (err) {
-            console.log(err);
+            setTimeout(() => {
+                setError(null);
+            }, 6000);
         } finally {
-            setLodaing(false);
-            setFormData(DefaultValues);
+            setLoading(false);
         }
     };
 
-    React.useEffect(() => {
-        const findToken = () => {
-            const Token = localStorage.getItem('Token');
-            if (Token) {
-                navigate('/main');
-            } else {
-                navigate('/');
-            }
-        };
-        findToken();
-    }, [navigate]);
-
     return (
-        <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 px-4 py-8">
-            <div className="w-full max-w-md">
-                <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-8 space-y-8">
+        <div className="flex justify-center items-center h-screen bg-black/90 px-4 py-8">
+            <div className="w-full max-w-[30%]">
+                <div className="bg-black/40 text-white p-8 md:p-10 space-y-8  border border-gray-300 rounded-2xl">
                     <div className="text-center">
-                        <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                        <h2 className="text-3xl font-bold mb-2">
                             Welcome Back
                         </h2>
                         <p className="text-gray-500 text-sm">
@@ -78,50 +113,34 @@ const Login = () => {
                         </p>
                     </div>
 
-                    <div className="space-y-6">
+                    {error && (
+                        <div className="backdrop-blur-md text-center bg-red-500/20 border border-red-400/30 text-red-700 font-semibold px-4 py-3 rounded-xl shadow-lg animate-fadeIn">
+                            <span className="block sm:inline">{error}</span>
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-2">
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Email Address
-                            </label>
                             <input
                                 type="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
-                                placeholder="you@example.com"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 outline-none"
+                                placeholder="Email"
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-500 focus:border-transparent transition-all duration-200 outline-none"
                                 disabled={loading}
                             />
                         </div>
 
-                        <div className="space-y-2">
-                            <div className="flex justify-between items-center">
-                                <label
-                                    htmlFor="password"
-                                    className="block text-sm font-medium text-gray-700"
-                                >
-                                    Password
-                                </label>
-                                <button
-                                    onClick={() => navigate('/forgot-password')}
-                                    className="text-xs text-right w-full text-green-600 hover:text-green-700 font-medium italic"
-                                >
-                                    Forgot password?
-                                </button>
-                            </div>
+                        <div className="space-y-2 mb-4">
                             <div className="relative">
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    placeholder={
-                                        showPassword ? 'password' : '••••••••'
-                                    }
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 outline-none pr-10"
+                                    placeholder="Password"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring focus:ring-green-500 focus:border-transparent transition-all duration-200 outline-none pr-10"
                                     disabled={loading}
                                 />
                                 <button
@@ -129,7 +148,7 @@ const Login = () => {
                                     onClick={() => {
                                         setShowPassword(!showPassword);
                                     }}
-                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#364153]"
+                                    className="absolute inset-y-0 right-2 pr-3 flex items-center text-gray-500"
                                 >
                                     {showPassword ? (
                                         <FaEyeSlash size={22} />
@@ -138,13 +157,20 @@ const Login = () => {
                                     )}
                                 </button>
                             </div>
+                            <div className="flex mt-4 justify-end">
+                                <span
+                                    onClick={() => navigate('/forgot-password')}
+                                    className="text-xs text-green-600 font-medium cursor-pointer hover:underline hover:underline-offset-4"
+                                >
+                                    Forgot password?
+                                </span>
+                            </div>
                         </div>
 
                         <button
                             type="submit"
-                            onClick={handleSubmit}
                             disabled={loading}
-                            className="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-green-500/30"
+                            className="w-full mt-2 bg-green-600 text-white font-semibold py-2 px-4 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                             {loading ? (
                                 <span className="flex items-center justify-center gap-2">
@@ -174,38 +200,21 @@ const Login = () => {
                                 'Login'
                             )}
                         </button>
-                    </div>
-
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">
-                                or
-                            </span>
-                        </div>
-                    </div>
+                    </form>
 
                     <div className="text-center">
-                        <p className="text-gray-600 text-sm">
+                        <p className="text-gray-400 text-sm">
                             New User?{' '}
                             <span
                                 onClick={() => navigate('/create-account')}
-                                className="text-green-600 hover:text-green-700 font-semibold cursor-pointer hover:underline"
+                                className="text-green-600 font-semibold cursor-pointer hover:underline hover:underline-offset-4"
                             >
                                 Create an account
                             </span>
                         </p>
                     </div>
                 </div>
-
-                <p className="text-center text-gray-500 text-xs mt-6">
-                    © 2025 Your Company. All rights reserved.
-                </p>
             </div>
-
-            {showMessage && <Reactivate data={data} />}
         </div>
     );
 };

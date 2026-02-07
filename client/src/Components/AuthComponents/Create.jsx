@@ -11,7 +11,7 @@ const Create = () => {
     const navigate = useNavigate();
 
     const [formData, setFormData] = React.useState(DefaultValues);
-    const [loading, setLodaing] = React.useState(false);
+    const [loading, setLoading] = React.useState(false);
 
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -82,7 +82,7 @@ const Create = () => {
 
         if (!isValidForm()) return;
 
-        setLodaing(true);
+        setLoading(true);
         try {
             const UpdatedData = {
                 name: formData.name.trim(),
@@ -104,7 +104,7 @@ const Create = () => {
                 setError(null);
             }, 6000);
         } finally {
-            setLodaing(false);
+            setLoading(false);
         }
     };
 
@@ -239,7 +239,7 @@ const Create = () => {
                             Already have an account?{' '}
                             <span
                                 onClick={() => navigate('/')}
-                                className="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer hover:underline"
+                                className="text-blue-600 font-semibold cursor-pointer hover:underline hover:underline-offset-4"
                             >
                                 Sign in
                             </span>
