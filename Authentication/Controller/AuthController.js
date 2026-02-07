@@ -5,28 +5,34 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.CreateAccount = async (req, res) => {
-    const { name, email, password } = req.body;
+    const data = req.body;
+
+    if (!data.email || !data.password || !data.name) {
+        return res.status(400).json({
+            message: 'Fill all the fields to create account',
+        });
+    }
 
     try {
-        const findUser = await UserModel.findOne({ email });
+        const findUser = await UserModel.findOne({ email: data.email });
 
         if (findUser)
-            return res.status(401).json({
+            return res.status(409).json({
                 message: 'Already Registered',
             });
 
-        const hashpasword = await bcrypt.hash(password, 10);
+        const hashpasword = await bcrypt.hash(data.password, 10);
 
         const createdAccount = await UserModel.create({
-            name,
-            email,
+            name: data.name,
+            email: data.email,
             password: hashpasword,
         });
 
         const Token = jwt.sign(
             {
                 user_Id: createdAccount._id,
-                email_id: email.email,
+                email_id: createdAccount.email,
             },
             JWT_SECRET,
             { expiresIn: '1h' }
@@ -43,17 +49,23 @@ exports.CreateAccount = async (req, res) => {
 };
 
 exports.Login = async (req, res) => {
-    const { email, password } = req.body;
+    const data = req.body;
+
+    if (!data.email || !data.password) {
+        return res.status(400).json({
+            message: 'Fill all the fields to create account',
+        });
+    }
 
     try {
-        const findEmail = await UserModel.findOne({ email });
+        const findEmail = await UserModel.findOne({ email: data.email });
 
         if (!findEmail) {
-            return res.status(401).json({ message: 'User Not Founded' });
+            return res.status(401).json({ message: 'User Not Found' });
         }
 
         const comparePassword = await bcrypt.compare(
-            password,
+            data.password,
             findEmail.password
         );
 
@@ -86,9 +98,9 @@ exports.Login = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
     try {
-        const { email, newPassword, confirmPassword } = req.body;
+        const data = req.body;
 
-        if (newPassword !== confirmPassword) {
+        if (data.newPassword !== data.confirmPassword) {
             return res.status(401).json({
                 error: {
                     code: 'PASSWORD_MISMATCH',
@@ -97,16 +109,19 @@ exports.forgotPassword = async (req, res) => {
             });
         }
 
-        const findEmail = await UserModel.findOne({ email });
+        const findEmail = await UserModel.findOne({ email: data.email });
         if (!findEmail) {
             return res
                 .status(404)
                 .json({ message: 'User Not Founded. check you email once' });
         }
 
-        const hashpasword = await bcrypt.hash(newPassword, 10);
+        const hashpasword = await bcrypt.hash(data.newPassword, 10);
 
-        await UserModel.findOneAndUpdate({ email }, { password: hashpasword });
+        await UserModel.findOneAndUpdate(
+            { email: data.email },
+            { password: hashpasword }
+        );
 
         return res
             .status(200)
