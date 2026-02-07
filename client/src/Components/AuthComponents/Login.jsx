@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { FaEyeSlash, FaEye } from 'react-icons/fa';
 import { useAuthStore } from '../../Pages/Stores/AuthStores';
 
