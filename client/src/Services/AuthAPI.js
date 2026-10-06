@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const AuthAPI = axios.create({
-    baseURL: 'http://localhost:5001',
+    baseURL: 'https://dashboard.render.com/web/srv-d5ocblnpm1nc738v6b5g',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
