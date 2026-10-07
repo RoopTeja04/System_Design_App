@@ -15,7 +15,7 @@ const app = express();
 
 app.use(
     cors({
-        origin: 'http://localhost:5173',
+        origin: 'https://system-design-app-omega.vercel.app',
         credentials: true,
     })
 );
