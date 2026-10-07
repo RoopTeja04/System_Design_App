@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const AuthAPI = axios.create({
-    baseURL: 'https://dashboard.render.com/web/srv-d5ocblnpm1nc738v6b5g',
+    baseURL: 'https://system-design-app-auth-service-server-1.onrender.com',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
